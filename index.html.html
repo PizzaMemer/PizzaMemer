@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pizza Memer — Commande</title>
+  <style>
+    :root{
+      --cream:#f7f1e6;
+      --paper:#fffdf8;
+      --red:#9c1d14;
+      --red-dark:#761109;
+      --ink:#1f1f1f;
+      --muted:#6f675f;
+      --green:#118a38;
+      --line:#e6ded2;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Georgia, "Times New Roman", serif;
+      background:var(--cream);
+      color:var(--ink);
+    }
+    .wrap{
+      max-width:780px;
+      margin:0 auto;
+      padding:22px 14px 40px;
+    }
+    .brand{
+      text-align:center;
+      margin-bottom:16px;
+    }
+    .brand .oven{
+      font-size:34px;
+      line-height:1;
+    }
+    .brand h1{
+      margin:5px 0 0;
+      font-size:46px;
+      letter-spacing:2px;
+      color:var(--red);
+      line-height:.9;
+    }
+    .brand h1 span{
+      display:block;
+      color:#171717;
+      font-size:40px;
+      margin-top:5px;
+    }
+    .brand .tag{
+      margin-top:10px;
+      font-size:14px;
+      letter-spacing:2px;
+    }
+    .title{
+      background:var(--red);
+      color:white;
+      text-align:center;
+      padding:14px;
+      border-radius:14px;
+      margin:18px 0;
+      box-shadow:0 8px 20px rgba(0,0,0,.08);
+    }
+    .title h2{margin:0;font-size:28px}
+    .title p{margin:5px 0 0;font-family:Arial,sans-serif;font-size:14px}
+    .card{
+      background:var(--paper);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px;
+      margin:14px 0;
+      box-shadow:0 8px 24px rgba(0,0,0,.05);
+    }
+    .section-title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:14px;
+    }
+    .num{
+      width:34px;height:34px;border-radius:50%;
+      display:grid;place-items:center;
+      background:var(--red);color:white;font-weight:700;font-size:20px;
+      flex:0 0 auto;
+    }
+    h3{margin:0;font-size:24px}
+    .pizza-row{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:12px;
+      align-items:center;
+      padding:12px 0;
+      border-bottom:1px solid var(--line);
+    }
+    .pizza-row:last-child{border-bottom:none}
+    .pizza-name{font-weight:700;font-size:18px}
+    .pizza-price{color:var(--red);font-weight:700;margin-top:3px}
+    .qty{
+      display:flex;align-items:center;gap:8px;
+      font-family:Arial,sans-serif;
+    }
+    .qty button{
+      width:36px;height:36px;border:1px solid #d9d1c6;
+      background:#f0ece6;border-radius:8px;font-size:22px;cursor:pointer;
+    }
+    .qty input{
+      width:46px;height:36px;text-align:center;
+      border:1px solid #d9d1c6;border-radius:8px;font-size:17px;
+      background:white;
+    }
+    .choices{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .choice{
+      border:1px solid #d9d1c6;
+      border-radius:12px;
+      padding:14px;
+      cursor:pointer;
+      font-family:Arial,sans-serif;
+      background:white;
+    }
+    .choice input{margin-right:8px}
+    label{
+      display:block;
+      font-family:Arial,sans-serif;
+      font-size:14px;
+      margin:12px 0 5px;
+      font-weight:600;
+    }
+    select,input[type=text],input[type=tel],textarea{
+      width:100%;
+      border:1px solid #d9d1c6;
+      border-radius:10px;
+      padding:12px;
+      font:16px Arial,sans-serif;
+      background:white;
+    }
+    textarea{min-height:88px;resize:vertical}
+    .days{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+    }
+    .day{
+      text-align:center;
+      border:1px solid #d9d1c6;
+      background:white;
+      border-radius:10px;
+      padding:12px 8px;
+      font-family:Arial,sans-serif;
+      cursor:pointer;
+    }
+    .summary{
+      font-family:Arial,sans-serif;
+      background:#faf6ef;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:14px;
+      margin-top:14px;
+    }
+    .sumline{display:flex;justify-content:space-between;gap:10px;margin:5px 0}
+    .sumline.total{font-weight:800;font-size:19px;padding-top:8px;border-top:1px solid var(--line)}
+    .discount{color:var(--green);font-weight:700}
+    .notice{
+      font-family:Arial,sans-serif;
+      font-size:13px;color:var(--muted);line-height:1.45;
+      margin-top:10px;
+    }
+    .btn{
+      width:100%;
+      border:none;
+      border-radius:14px;
+      background:var(--green);
+      color:white;
+      padding:16px;
+      font:700 17px Arial,sans-serif;
+      cursor:pointer;
+      margin-top:14px;
+      box-shadow:0 8px 18px rgba(17,138,56,.2);
+    }
+    .btn:hover{filter:brightness(.96)}
+    .footer{
+      text-align:center;
+      font-family:Arial,sans-serif;
+      font-size:13px;
+      color:var(--muted);
+      margin-top:18px;
+      line-height:1.5;
+    }
+    .hidden{display:none}
+    .error{
+      font-family:Arial,sans-serif;color:#a00000;
+      background:#fff0ef;border:1px solid #f0c8c5;border-radius:10px;
+      padding:10px;margin-top:10px;display:none;
+    }
+    @media(max-width:560px){
+      .brand h1{font-size:38px}
+      .brand h1 span{font-size:34px}
+      .choices{grid-template-columns:1fr}
+      .days{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <div class="oven">🔥</div>
+    <h1>PIZZA <span>MEMER</span></h1>
+    <div class="tag">PIZZA ARTISANALE · GOÛT · QUALITÉ · PASSION</div>
+  </div>
+
+  <div class="title">
+    <h2>Passer commande</h2>
+    <p>Choisissez vos pizzas puis envoyez le récapitulatif directement sur WhatsApp.</p>
+  </div>
+
+  <div class="card">
+    <div class="section-title"><div class="num">1</div><h3>Vos pizzas</h3></div>
+    <div id="pizzaList"></div>
+    <div class="summary">
+      <div class="sumline"><span>Sous-total pizzas</span><strong id="subtotal">0 Rs</strong></div>
+      <div class="sumline discount" id="discountLine" style="display:none"><span>Remise 10 % (4 pizzas ou +)</span><strong id="discount">- 0 Rs</strong></div>
+      <div class="sumline"><span>Livraison</span><strong id="deliveryCost">0 Rs</strong></div>
+      <div class="sumline total"><span>Total estimé</span><span id="total">0 Rs</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title"><div class="num">2</div><h3>Mode de commande</h3></div>
+    <div class="choices">
+      <label class="choice"><input type="radio" name="mode" value="Pick-up" checked> 🛍️ Pick-up — Chemin Vingt Pieds, Pereybère</label>
+      <label class="choice"><input type="radio" name="mode" value="Livraison"> 🛵 Livraison</label>
+    </div>
+
+    <div id="deliveryFields" class="hidden">
+      <label for="zone">Zone de livraison</label>
+      <select id="zone">
+        <option value="">Choisir une zone</option>
+        <option data-fee="70" value="Pereybère">Pereybère — 70 Rs</option>
+        <option data-fee="70" value="Grand Baie">Grand Baie — 70 Rs</option>
+        <option data-fee="100" value="Bain Boeuf">Bain Boeuf — 100 Rs</option>
+        <option data-fee="100" value="Cap Malheureux">Cap Malheureux — 100 Rs</option>
+        <option data-fee="150" value="Pointe aux Canonniers">Pointe aux Canonniers — 150 Rs</option>
+        <option data-fee="150" value="Mont Choisy">Mont Choisy — 150 Rs</option>
+        <option data-fee="150" value="Trou aux Biches">Trou aux Biches — 150 Rs</option>
+        <option data-fee="150" value="Calodyne">Calodyne — 150 Rs</option>
+        <option data-fee="150" value="Grand Gaube">Grand Gaube — 150 Rs</option>
+      </select>
+
+      <label for="address">Adresse de livraison</label>
+      <input id="address" type="text" placeholder="Votre adresse">
+      <div class="notice">Livraison gratuite à partir de 1 500 Rs pour Pereybère et Grand Baie.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title"><div class="num">3</div><h3>Jour souhaité</h3></div>
+    <div class="days">
+      <label class="day"><input type="radio" name="day" value="Jeudi"> Jeudi</label>
+      <label class="day"><input type="radio" name="day" value="Vendredi"> Vendredi</label>
+      <label class="day"><input type="radio" name="day" value="Samedi"> Samedi</label>
+    </div>
+    <div class="notice">Commande 24 h minimum à l'avance, idéalement 48 h avant.</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title"><div class="num">4</div><h3>Vos informations</h3></div>
+    <label for="name">Nom et prénom *</label>
+    <input id="name" type="text" placeholder="Votre nom">
+
+    <label for="phone">Numéro de téléphone *</label>
+    <input id="phone" type="tel" placeholder="Votre numéro">
+
+    <label for="message">Message (optionnel)</label>
+    <textarea id="message" placeholder="Heure souhaitée, jambon de poulet, précision, etc."></textarea>
+
+    <div id="error" class="error"></div>
+
+    <button class="btn" id="send">🟢 ENVOYER MA COMMANDE SUR WHATSAPP</button>
+    <div class="notice">Le bouton ouvre WhatsApp avec votre commande préremplie. Rien n'est envoyé tant que vous ne validez pas le message dans WhatsApp.</div>
+  </div>
+
+  <div class="footer">
+    Production limitée, jusqu'à épuisement du stock.<br>
+    Pizzas précuites : préchauffez le four au maximum en chaleur statique, retirez l'emballage puis enfournez 2 à 3 minutes.<br>
+    WhatsApp : 5477 8439
+  </div>
+</div>
+
+<script>
+const pizzas = [
+  {name:'Margherita', price:330},
+  {name:'Thon', price:390},
+  {name:'La Forestière', price:420},
+  {name:'Signature Blanche', price:430},
+  {name:'Burger', price:450},
+  {name:'Welsh', price:450}
+];
+
+const list = document.getElementById('pizzaList');
+
+pizzas.forEach((p, i) => {
+  const row = document.createElement('div');
+  row.className = 'pizza-row';
+  row.innerHTML = `
+    <div>
+      <div class="pizza-name">${p.name}</div>
+      <div class="pizza-price">${p.price} Rs</div>
+    </div>
+    <div class="qty">
+      <button type="button" data-action="minus" data-i="${i}">−</button>
+      <input id="qty-${i}" type="number" min="0" value="0" inputmode="numeric">
+      <button type="button" data-action="plus" data-i="${i}">+</button>
+    </div>`;
+  list.appendChild(row);
+});
+
+document.addEventListener('click', e => {
+  if(e.target.matches('[data-action]')){
+    const i = e.target.dataset.i;
+    const input = document.getElementById('qty-'+i);
+    let v = parseInt(input.value || 0,10);
+    if(e.target.dataset.action === 'plus') v++;
+    if(e.target.dataset.action === 'minus') v = Math.max(0,v-1);
+    input.value = v;
+    calculate();
+  }
+});
+
+document.querySelectorAll('input[type=number]').forEach(el => {
+  el.addEventListener('input', () => {
+    if(parseInt(el.value||0,10) < 0) el.value = 0;
+    calculate();
+  });
+});
+
+document.querySelectorAll('input[name=mode]').forEach(r => {
+  r.addEventListener('change', () => {
+    const delivery = document.querySelector('input[name=mode]:checked').value === 'Livraison';
+    document.getElementById('deliveryFields').classList.toggle('hidden', !delivery);
+    calculate();
+  });
+});
+document.getElementById('zone').addEventListener('change', calculate);
+
+function getOrderData(){
+  const items = [];
+  let qtyTotal = 0;
+  let subtotal = 0;
+  pizzas.forEach((p,i) => {
+    const q = Math.max(0, parseInt(document.getElementById('qty-'+i).value || 0,10));
+    if(q>0){
+      items.push({...p, qty:q, line:q*p.price});
+      qtyTotal += q;
+      subtotal += q*p.price;
+    }
+  });
+
+  const discount = qtyTotal >= 4 ? Math.round(subtotal * 0.10) : 0;
+  const pizzaAfterDiscount = subtotal - discount;
+  const mode = document.querySelector('input[name=mode]:checked').value;
+  let deliveryFee = 0;
+  let zone = '';
+
+  if(mode === 'Livraison'){
+    const sel = document.getElementById('zone');
+    zone = sel.value;
+    if(zone){
+      deliveryFee = parseInt(sel.options[sel.selectedIndex].dataset.fee || '0', 10);
+      if((zone === 'Pereybère' || zone === 'Grand Baie') && pizzaAfterDiscount >= 1500){
+        deliveryFee = 0;
+      }
+    }
+  }
+
+  return {items, qtyTotal, subtotal, discount, pizzaAfterDiscount, mode, zone, deliveryFee, total:pizzaAfterDiscount+deliveryFee};
+}
+
+function calculate(){
+  const d = getOrderData();
+  document.getElementById('subtotal').textContent = d.subtotal + ' Rs';
+  document.getElementById('discount').textContent = '- ' + d.discount + ' Rs';
+  document.getElementById('discountLine').style.display = d.discount ? 'flex' : 'none';
+  document.getElementById('deliveryCost').textContent = d.mode === 'Livraison' ? (d.deliveryFee === 0 && d.zone ? 'Offerte' : d.deliveryFee + ' Rs') : '0 Rs';
+  document.getElementById('total').textContent = d.total + ' Rs';
+}
+
+document.getElementById('send').addEventListener('click', () => {
+  const d = getOrderData();
+  const name = document.getElementById('name').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const day = document.querySelector('input[name=day]:checked')?.value || '';
+  const address = document.getElementById('address').value.trim();
+  const note = document.getElementById('message').value.trim();
+  const err = document.getElementById('error');
+  const errors = [];
+
+  if(!d.items.length) errors.push('Choisissez au moins une pizza.');
+  if(!day) errors.push('Choisissez un jour.');
+  if(!name) errors.push('Indiquez votre nom.');
+  if(!phone) errors.push('Indiquez votre numéro de téléphone.');
+  if(d.mode === 'Livraison' && !d.zone) errors.push('Choisissez une zone de livraison.');
+  if(d.mode === 'Livraison' && !address) errors.push('Indiquez votre adresse de livraison.');
+
+  if(errors.length){
+    err.innerHTML = errors.join('<br>');
+    err.style.display = 'block';
+    return;
+  }
+  err.style.display = 'none';
+
+  const lines = [];
+  lines.push('Bonjour, je souhaite passer une commande Pizza Memer 🍕');
+  lines.push('');
+  lines.push('*Commande :*');
+  d.items.forEach(it => lines.push(`• ${it.qty} x ${it.name} — ${it.line} Rs`));
+  lines.push('');
+  lines.push(`Sous-total : ${d.subtotal} Rs`);
+  if(d.discount) lines.push(`Remise 10 % : -${d.discount} Rs`);
+  if(d.mode === 'Livraison'){
+    lines.push(`Livraison : ${d.deliveryFee === 0 ? 'Offerte' : d.deliveryFee + ' Rs'}`);
+  }
+  lines.push(`*Total estimé : ${d.total} Rs*`);
+  lines.push('');
+  lines.push(`Mode : ${d.mode}`);
+  if(d.mode === 'Livraison'){
+    lines.push(`Zone : ${d.zone}`);
+    lines.push(`Adresse : ${address}`);
+  } else {
+    lines.push('Retrait : Chemin Vingt Pieds, Pereybère');
+  }
+  lines.push(`Jour : ${day}`);
+  lines.push('');
+  lines.push(`Nom : ${name}`);
+  lines.push(`Téléphone : ${phone}`);
+  if(note) lines.push(`Message : ${note}`);
+  lines.push('');
+  lines.push('Merci !');
+
+  const url = 'https://wa.me/23054778439?text=' + encodeURIComponent(lines.join('\n'));
+  window.open(url, '_blank');
+});
+
+calculate();
+</script>
+</body>
+</html>
