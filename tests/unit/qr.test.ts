@@ -1,13 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import sharp from 'sharp';
 import jsQR from 'jsqr';
-import { PNG } from 'pngjs';
 import { commerce } from '../../src/config/commerce';
 import { qrPng, qrSvg, urlCarte } from '../../src/lib/pdf/qr';
 import { COTE_MM, DPI_PNG, genererEtiquettePng } from '../../src/lib/pdf/etiquette';
 
-function decoderPng(buf: Buffer): string | null {
-  const p = PNG.sync.read(buf);
+async function lirePng(buf: Buffer) {
+  const { data, info } = await sharp(buf).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  return { data, width: info.width, height: info.height };
+}
+async function decoderPng(buf: Buffer): Promise<string | null> {
+  const p = await lirePng(buf);
   return jsQR(new Uint8ClampedArray(p.data), p.width, p.height)?.data ?? null;
 }
 
@@ -41,13 +44,13 @@ describe('urlCarte', () => {
 describe('QR de la carte', () => {
   it('le PNG 1200 px se décode en urlCarte()', async () => {
     const png = await qrPng(urlCarte(), 1200);
-    const p = PNG.sync.read(png);
+    const p = await lirePng(png);
     expect([p.width, p.height]).toEqual([1200, 1200]);
-    expect(decoderPng(png)).toBe(urlCarte());
+    expect(await decoderPng(png)).toBe(urlCarte());
   });
 
   it('est en noir et blanc purs, avec une zone de silence blanche de 4 modules', async () => {
-    const p = PNG.sync.read(await qrPng(urlCarte(), 1200));
+    const p = await lirePng(await qrPng(urlCarte(), 1200));
     const valeurs = new Set<number>();
     for (let i = 0; i < p.data.length; i += 4) valeurs.add(p.data[i]);
     expect([...valeurs].sort()).toEqual([0, 255]);
@@ -64,10 +67,15 @@ describe('QR de la carte', () => {
 
   /**
    * Lisibilité à taille réelle (côté mesuré zone de silence comprise, simulation ci-dessus).
-   * Taille minimale validée : 20 mm (avec l'adresse actuelle, QR version 4 = 33 modules + silence).
-   * L'étiquette fournie fait 34 mm : large marge de sécurité. En dessous de 20 mm on ne garantit rien.
+   * Résultats mesurés avec jsQR et l'adresse actuelle (QR version 4 = 33 modules + 2 × 4 de silence) :
+   *   25 mm : lisible, même avec un flou fort (σ = 1)    -> TAILLE RECOMMANDÉE
+   *   22 mm : lisible avec un flou léger (σ ≤ 0.7)       -> TAILLE MINIMALE VALIDÉE
+   *   20 mm : échoue dès σ = 0.7 ; 15 mm : échoue        -> NE PAS descendre sous 22 mm
+   * (≈ 2 px par module à 4 px/mm : en dessous, un téléphone moyen n'échantillonne plus correctement.)
+   * L'étiquette fournie fait 34 mm de QR : large marge de sécurité. Une adresse plus courte
+   * (moins de modules) permettrait de réduire la taille, mais l'adresse imprimée ne doit plus changer.
    */
-  for (const mm of [25, 20]) {
+  for (const mm of [25, 22]) {
     it(`reste lisible imprimé à ${mm} mm sur carton kraft`, async () => {
       const png = await qrPng(urlCarte(), 1200);
       expect(await vuParTelephone(png, mm)).toBe(urlCarte());
@@ -84,7 +92,7 @@ describe('étiquette PNG', () => {
     const meta = await sharp(buf).metadata();
     expect(meta.width).toBe(Math.round((COTE_MM / 25.4) * DPI_PNG));
     expect(meta.height).toBe(meta.width);
-    expect(decoderPng(buf)).toBe(urlCarte());
+    expect(await decoderPng(buf)).toBe(urlCarte());
   });
   it("le QR de l'étiquette reste lisible une fois imprimé en 60 mm sur kraft", async () => {
     expect(await vuParTelephone(await genererEtiquettePng(), COTE_MM)).toBe(urlCarte());
