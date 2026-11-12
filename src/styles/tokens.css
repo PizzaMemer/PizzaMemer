@@ -1,0 +1,33 @@
+/* Jetons de design Pizza Memer — propriétaire : orchestrateur (direction artistique). */
+:root {
+  /* Couleurs */
+  --creme: #f6eede;        /* fond principal, farine */
+  --papier: #fffaf0;       /* cartes, surfaces */
+  --tomate: #c5301c;       /* action principale */
+  --tomate-fonce: #96200f; /* survol, titres forts */
+  --basilic: #2e6b3a;      /* succès, WhatsApp, touches végétales */
+  --basilic-clair: #e3efdc;
+  --braise: #e09a3c;       /* accent chaud : corniche dorée, étiquettes */
+  --four: #221611;         /* brun-noir "sole du four" : texte, sections sombres */
+  --encre: #2a1d16;        /* texte courant */
+  --encre-douce: #6d5c50;  /* texte secondaire (contraste AA sur --creme) */
+  --trait: #e4d8c2;        /* filets, bordures */
+
+  /* Typographies (auto-hébergées, voir BaseLayout) */
+  --titre: 'Fraunces Variable', 'Fraunces', Georgia, serif;
+  --texte: 'Figtree Variable', 'Figtree', system-ui, sans-serif;
+
+  /* Échelle fluide */
+  --t-hero: clamp(2.5rem, 8vw + 0.5rem, 5.25rem);
+  --t-h2: clamp(1.9rem, 4vw + 0.6rem, 3.1rem);
+  --t-h3: clamp(1.25rem, 1.2vw + 1rem, 1.6rem);
+  --t-corps: 1.0625rem;
+  --t-petit: 0.9rem;
+
+  /* Rythme */
+  --e-1: 0.5rem; --e-2: 1rem; --e-3: 1.5rem; --e-4: 2.5rem; --e-5: 4rem; --e-6: 6.5rem;
+  --rayon: 18px; --rayon-petit: 10px; --rayon-pilule: 999px;
+  --ombre: 0 1px 2px rgb(34 22 17 / 0.06), 0 12px 32px -12px rgb(34 22 17 / 0.22);
+  --largeur: 1180px;
+  --transition: 180ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
