@@ -1,34 +1,29 @@
 ---
 /**
- * Visuel rond d'une pizza : photo réelle (src/assets/pizzas/) si elle existe, sinon l'illustration.
+ * Visuel rectangulaire d'une pizza : photo réelle (src/assets/pizzas/) si elle existe,
+ * sinon un repli sobre : dessin au trait sur fond uni, avec la mention « illustration ».
  */
-import { Picture } from 'astro:assets';
 import type { Pizza } from '../lib/types';
+import { textes } from '../content/textes';
 import PizzaIllustration from './PizzaIllustration.astro';
+import Photo from './Photo.astro';
 import { photoPizza } from './marque';
 
 interface Props {
   pizza: Pizza;
-  /** Visuel du haut de page : chargé immédiatement. */
-  heros?: boolean;
   sizes?: string;
   class?: string;
 }
-const { pizza, heros = false, sizes = '(min-width: 900px) 360px, 60vw', class: classe } = Astro.props;
+const { pizza, sizes = '(min-width: 1000px) 380px, (min-width: 640px) 46vw, 116px', class: classe } = Astro.props;
 const photo = photoPizza(pizza.photo, pizza.id);
 ---
-<div class:list={['disque', classe]}>
-  {photo ? (
-    <Picture
-      src={photo}
-      alt={pizza.nom}
-      formats={['avif', 'webp']}
-      widths={[240, 360, 480, 720, 960]}
-      sizes={sizes}
-      loading={heros ? 'eager' : 'lazy'}
-      class="disque__photo"
-    />
-  ) : (
+{photo && pizza.photo ? (
+  <div class:list={['cadre', 'zoomable', classe]}>
+    <Photo src={photo} nom={pizza.photo} alt={`Pizza ${pizza.nom}`} widths={[320, 480, 720]} sizes={sizes} />
+  </div>
+) : (
+  <div class:list={['cadre', 'cadre--dessin', classe]} role="img" aria-label={`${pizza.nom} — ${textes.carte.illustration}`}>
     <PizzaIllustration pizza={pizza} />
-  )}
-</div>
+    <p class="cadre__mention" aria-hidden="true">{textes.carte.illustration}</p>
+  </div>
+)}

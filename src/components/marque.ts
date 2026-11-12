@@ -30,3 +30,18 @@ export function photoPizza(nom: string | null, idPizza: string): ImageMetadata |
   }
   return trouvee;
 }
+
+const ambiance = import.meta.glob<ImageMetadata>('/src/assets/ambiance/*.{jpg,jpeg,png,webp,avif}', {
+  eager: true,
+  import: 'default',
+});
+
+/** Photo d'ambiance (pâton, four…) par nom de fichier ; null si absente. */
+export function photoAmbiance(nom: string): ImageMetadata | null {
+  return ambiance[`/src/assets/ambiance/${nom}`] ?? null;
+}
+
+/** Photo d'une pizza par nom de fichier, sans avertissement (usage décoratif, ex. héros). */
+export function photoPizzaParNom(nom: string): ImageMetadata | null {
+  return photos[`/src/assets/pizzas/${nom}`] ?? null;
+}

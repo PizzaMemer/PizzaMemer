@@ -83,7 +83,7 @@ export function donneesStructurees(): object {
     servesCuisine: ['Pizza', 'Italienne'],
     address: {
       '@type': 'PostalAddress',
-      streetAddress: commerce.adresseRetrait,
+      streetAddress: commerce.adresseRetrait.split(',')[0].trim(),
       addressLocality: 'Péreybère',
       addressRegion: 'Rivière du Rempart',
       addressCountry: 'MU',

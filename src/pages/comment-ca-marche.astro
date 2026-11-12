@@ -1,18 +1,31 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { metaParPage, donneesStructurees, donneesFaq } from '../lib/seo';
 import { commerce } from '../config/commerce';
 import { textes } from '../content/textes';
 import { url } from '../lib/url';
+import Photo from '../components/Photo.astro';
+import { photoAmbiance } from '../components/marque';
 
 const t = textes.commentCaMarche;
 const { cuisson, conservation, congelation } = commerce.preparation;
+const sortie = photoAmbiance('sortie-du-four.jpg');
+const four = photoAmbiance('four.jpg');
 ---
-<BaseLayout title={`${t.titre} — ${commerce.nom}`} description={t.intro}>
-  <div class="conteneur--etroit" style="width:min(100% - 2rem, 900px);margin-inline:auto">
+<BaseLayout title={metaParPage.commentCaMarche.title} description={metaParPage.commentCaMarche.description} jsonLd={[donneesStructurees(), donneesFaq(t.faq)]}>
+  <div class="conteneur--etroit">
     <header class="page-tete">
       <h1>{t.titre}</h1>
       <p class="page-tete__intro">{t.intro}</p>
     </header>
+
+    {sortie && (
+      <figure class="figure-large">
+        <div class="cadre">
+          <Photo src={sortie} nom="sortie-du-four.jpg" alt="Une pizza sur la pelle, tout juste sortie du four, dans la vapeur" widths={[480, 800, 1155]} sizes="(min-width: 960px) 900px, 100vw" priorite />
+        </div>
+      </figure>
+    )}
 
     {cuisson.length > 0 && (
       <section class="bloc" aria-labelledby="t-cuisson">
@@ -21,6 +34,13 @@ const { cuisson, conservation, congelation } = commerce.preparation;
           {cuisson.map((e, i) => <li><span class="pas__num" aria-hidden="true">{i + 1}</span><span>{e}</span></li>)}
         </ol>
         <p class="astuce">{t.cuisson.astuce}</p>
+        {four && (
+          <div class="bloc__visuel">
+            <div class="cadre">
+              <Photo src={four} nom="four.jpg" alt="Une pizza qui cuit derrière la vitre d’un four" widths={[480, 800]} sizes="(min-width: 600px) 520px, 100vw" />
+            </div>
+          </div>
+        )}
       </section>
     )}
 

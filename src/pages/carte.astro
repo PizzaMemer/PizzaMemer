@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { metaParPage, donneesStructurees } from '../lib/seo';
 import PizzaCarte from '../components/PizzaCarte.astro';
 import { commerce } from '../config/commerce';
 import { textes } from '../content/textes';
@@ -11,19 +12,20 @@ const visibles = pizzasVisibles();
 const rq = commerce.remises.quantite;
 const illustre = visibles.some((p) => !p.photo);
 ---
-<BaseLayout title={`${textes.carte.titre} — ${commerce.nom}`} description={textes.carte.intro}>
+<BaseLayout title={metaParPage.carte.title} description={metaParPage.carte.description} jsonLd={donneesStructurees()}>
   <div class="conteneur">
     <header class="page-tete">
       <h1>{textes.carte.titre}</h1>
       <p class="page-tete__intro">{textes.carte.intro}</p>
     </header>
     <div class="carte-outils">
-      {rq.actif && <p class="bandeau" style="margin:0">{libelles.remiseQuantite(rq.pourcentage, rq.aPartirDe)}</p>}
-      <a class="btn btn--clair" href={url('carte.pdf')} download>{textes.carte.telecharger}</a>
+      {rq.actif ? <p class="bandeau">{libelles.remiseQuantite(rq.pourcentage, rq.aPartirDe)}</p> : <span></span>}
+      <a class="souligne" href={url('carte.pdf')} download>{textes.carte.telecharger}</a>
     </div>
-    <div class="plats page-corps">
-      {visibles.map((p, i) => <PizzaCarte pizza={p} index={i} />)}
+    <div class="plats">
+      {visibles.map((p) => <PizzaCarte pizza={p} />)}
     </div>
     {illustre && <p class="note-illustration">{textes.carte.illustration}</p>}
+    <div class="page-corps"></div>
   </div>
 </BaseLayout>

@@ -26,8 +26,10 @@ interface Props {
   type?: string;
   /** Page de commande : ni tiroir ni barre collante. */
   commande?: boolean;
+  noindex?: boolean;
+  jsonLd?: object | object[];
 }
-const { title, description, image, type, commande = false } = Astro.props;
+const { title, description, image, type, commande = false, noindex = false, jsonLd } = Astro.props;
 
 const liens = [
   { href: url('carte/'), nom: textes.nav.carte },
@@ -44,13 +46,13 @@ const annee = new Date().getFullYear();
   <head>
     <meta charset="utf-8" />
     <script is:inline>document.documentElement.classList.add('js');</script>
-    <Seo title={title} description={description} image={image} type={type} />
+    <Seo title={title} description={description} image={image} type={type} noindex={noindex} jsonLd={jsonLd} />
     <link rel="preload" href={titreWoff2} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={texteWoff2} as="font" type="font/woff2" crossorigin />
   </head>
   <body>
     <a class="evitement" href="#contenu">{libelles.evitement}</a>
-    <header class="entete">
+    <header class="entete" data-entete>
       <div class="conteneur entete__interieur">
         <a class="entete__logo" href={url()} aria-label={`${commerce.nom} — ${textes.nav.accueil}`}>
           <Logo />
@@ -58,7 +60,7 @@ const annee = new Date().getFullYear();
         <nav id="menu-principal" class="nav" aria-label="Navigation principale" data-ouvert="false">
           <ul>
             {liens.map((l) => (
-              <li><a class="nav__lien" href={l.href} aria-current={courant(l.href) ? 'page' : undefined}>{l.nom}</a></li>
+              <li><a class="nav__lien" href={l.href} aria-current={courant(l.href) ? 'page' : undefined}><span>{l.nom}</span></a></li>
             ))}
           </ul>
         </nav>
@@ -83,16 +85,16 @@ const annee = new Date().getFullYear();
           <nav aria-label={libelles.piedLiens}>
             <h2>{libelles.piedLiens}</h2>
             <ul>
-              <li><a href={url()}>{textes.nav.accueil}</a></li>
-              {liens.map((l) => <li><a href={l.href}>{l.nom}</a></li>)}
+              <li><a class="souligne" href={url()}>{textes.nav.accueil}</a></li>
+              {liens.map((l) => <li><a class="souligne" href={l.href}>{l.nom}</a></li>)}
             </ul>
           </nav>
           <div>
             <h2>{libelles.piedCoordonnees}</h2>
-            <p><a href={`https://wa.me/${commerce.whatsapp}`} rel="noopener">WhatsApp : {commerce.whatsappAffiche}</a></p>
+            <p><a class="souligne" href={`https://wa.me/${commerce.whatsapp}`} rel="noopener">WhatsApp : {commerce.whatsappAffiche}</a></p>
             <p>{commerce.adresseRetrait}</p>
             {commerce.horaires && <p>{commerce.horaires}</p>}
-            {commerce.facebook && <p><a href={commerce.facebook} rel="noopener">Facebook</a></p>}
+            {commerce.facebook && <p><a class="souligne" href={commerce.facebook} rel="noopener">Facebook</a></p>}
           </div>
           <div>
             <h2>{libelles.piedJours}</h2>

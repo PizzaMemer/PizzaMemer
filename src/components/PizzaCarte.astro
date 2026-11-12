@@ -8,24 +8,20 @@ import { jourMois } from './outils';
 
 interface Props {
   pizza: Pizza;
-  index?: number;
 }
-const { pizza, index = 0 } = Astro.props;
+const { pizza } = Astro.props;
 const idTitre = `plat-${pizza.id}`;
 ---
-<article class:list={['plat', !pizza.disponible && 'plat--indispo']} data-reveal style={`--tour:${((index * 37) % 50) - 20}deg`} aria-labelledby={idTitre}>
-  <PizzaVisuel pizza={pizza} class="plat__disque" />
+<article class:list={['plat', !pizza.disponible && 'plat--indispo']} data-reveal aria-labelledby={idTitre}>
+  <PizzaVisuel pizza={pizza} class="plat__visuel" />
   <div class="plat__corps">
     <div class="plat__tete">
       <h3 id={idTitre} class="plat__nom">{pizza.nom}</h3>
-      <span class="plat__pointilles" aria-hidden="true"></span>
-      <span class="etiquette-prix">{rs(pizza.prix)}</span>
+      <span class="plat__prix">{rs(pizza.prix)}</span>
     </div>
     {pizza.badge && (
       <p class="plat__badge">
-        <span class:list={['pastille', pizza.badge === 'nouveau' ? 'pastille--basilic' : 'pastille--braise']}>
-          {pizza.badge === 'nouveau' ? libelles.nouveau : libelles.temporaire}
-        </span>
+        <span class="caps">{pizza.badge === 'nouveau' ? libelles.nouveau : libelles.temporaire}</span>
         {pizza.badge === 'temporaire' && pizza.jusquau && <span class="plat__jusquau">{libelles.jusquau} {jourMois(pizza.jusquau)}</span>}
       </p>
     )}

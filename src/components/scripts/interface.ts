@@ -1,4 +1,4 @@
-/** Interactions légères communes : menu mobile, apparition au défilement, rotation du disque du héros. */
+/** Interactions légères communes : menu mobile, en-tête condensé, apparition au défilement. */
 const reduit = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Menu mobile
@@ -25,15 +25,29 @@ if (bouton && menu) {
   });
 }
 
-// Apparition douce au défilement
+// En-tête qui se condense au défilement
+const entete = document.querySelector<HTMLElement>('[data-entete]');
+if (entete) {
+  const maj = (): void => {
+    if (window.scrollY > 24) entete.setAttribute('data-condense', '');
+    else entete.removeAttribute('data-condense');
+  };
+  maj();
+  window.addEventListener('scroll', maj, { passive: true });
+}
+
+// Apparition douce au défilement, échelonnée pour les éléments qui entrent ensemble
 const aRevoir = document.querySelectorAll<HTMLElement>('[data-reveal]');
 if (reduit || !('IntersectionObserver' in window)) {
   aRevoir.forEach((el) => el.classList.add('vu'));
 } else {
   const obs = new IntersectionObserver(
     (entrees) => {
+      let rang = 0;
       for (const e of entrees) {
         if (e.isIntersecting) {
+          (e.target as HTMLElement).style.setProperty('--delai', `${Math.min(rang, 4) * 110}ms`);
+          rang++;
           e.target.classList.add('vu');
           obs.unobserve(e.target);
         }
@@ -42,24 +56,4 @@ if (reduit || !('IntersectionObserver' in window)) {
     { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
   );
   aRevoir.forEach((el) => obs.observe(el));
-}
-
-// Rotation lente du disque du héros au défilement
-const disque = document.querySelector<HTMLElement>('[data-tourne]');
-if (disque && !reduit) {
-  let en = false;
-  const maj = (): void => {
-    en = false;
-    disque.style.setProperty('--rot', `${Math.min(window.scrollY, 900) * 0.035}deg`);
-  };
-  window.addEventListener(
-    'scroll',
-    () => {
-      if (!en) {
-        en = true;
-        requestAnimationFrame(maj);
-      }
-    },
-    { passive: true },
-  );
 }

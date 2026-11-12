@@ -1,0 +1,37 @@
+---
+/**
+ * Photo optimisée (avif + webp), recadrée via la table de cadrages.
+ * Le parent .cadre fixe le ratio : aucun décalage de mise en page.
+ */
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { cadrage } from './cadrages';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  /** Nom de fichier, pour retrouver le cadrage. */
+  nom: string;
+  widths: number[];
+  sizes: string;
+  /** Visuel du haut de page : chargé en priorité. */
+  priorite?: boolean;
+  class?: string;
+}
+const { src, alt, nom, widths, sizes, priorite = false, class: classe } = Astro.props;
+const c = cadrage(nom);
+const style = `--px:${c.x}%;--py:${c.y}%;--z:${c.zoom}`;
+---
+<Picture
+  src={src}
+  alt={alt}
+  formats={['avif', 'webp']}
+  fallbackFormat="webp"
+  widths={widths}
+  sizes={sizes}
+  loading={priorite ? 'eager' : 'lazy'}
+  decoding="async"
+  fetchpriority={priorite ? 'high' : undefined}
+  class:list={['photo', classe]}
+  style={style}
+/>

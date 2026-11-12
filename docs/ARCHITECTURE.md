@@ -38,3 +38,12 @@ formulaire + envoi WhatsApp) · `/carte.pdf` · `/qr/…` (visuels QR). Le QR po
    automatiquement à l'ouverture du lien.
 4. Aucun délai minimum de 24 h imposé.
 5. Français partout (interface, commentaires utiles au gérant, noms de fonctions métier).
+
+## Direction artistique
+Consigne du gérant : « un truc de pro, design sobre avec des effets classe ». Principes retenus :
+- **Palette resserrée** (`tokens.css`) : crème, brun-noir, sable en aplat ; tomate réservé aux actions, basilic à WhatsApp et au succès.
+- **Typographie** : Fraunces léger pour les titres, Figtree pour le texte ; petites capitales espacées (`.caps`) pour le seul registre « étiquette ».
+- **Photos en cadres rectangulaires** à ratio constant par contexte ; recadrage par fichier dans `src/components/cadrages.ts` (jamais dans la config commerciale). `Photo.astro` : avif + webp, 3 largeurs.
+- **Repli sans photo** : dessin au trait monochrome sur fond sable, avec la mention `textes.carte.illustration`.
+- **Mouvement discret** (200–600 ms, CSS + IntersectionObserver, tout coupé sous `prefers-reduced-motion`) : apparition échelonnée, masque et parallaxe du héros, zoom lent au survol, en-tête condensé, soulignements animés, coche à l'ajout, View Transitions inter-documents.
+- Aucun ornement gratuit : pas de grain, de disques ni d'étiquettes colorées ; filets fins et grille rigoureuse.

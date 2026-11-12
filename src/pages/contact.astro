@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { metaParPage, donneesStructurees } from '../lib/seo';
 import { commerce } from '../config/commerce';
 import { textes } from '../content/textes';
 import { rs } from '../lib/format';
@@ -9,7 +10,7 @@ import { fraisZone, joursDistribution } from '../components/outils';
 const t = textes.contact;
 const jours = joursDistribution();
 ---
-<BaseLayout title={`${t.titre} — ${commerce.nom}`} description={t.intro}>
+<BaseLayout title={metaParPage.contact.title} description={metaParPage.contact.description} jsonLd={donneesStructurees()}>
   <div class="conteneur">
     <header class="page-tete">
       <h1>{t.titre}</h1>

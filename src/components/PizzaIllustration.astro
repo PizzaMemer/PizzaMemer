@@ -9,4 +9,4 @@ interface Props {
 const { pizza, class: classe } = Astro.props;
 const dessin = dessinerPizza(pizza);
 ---
-<svg class:list={['illustration', classe]} viewBox="0 0 200 200" width="200" height="200" aria-hidden="true" focusable="false" set:html={dessin} />
+<svg class:list={['illustration', classe]} viewBox="0 0 200 200" width="200" height="200" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" set:html={dessin} />

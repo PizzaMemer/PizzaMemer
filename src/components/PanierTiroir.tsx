@@ -108,7 +108,7 @@ export default function PanierTiroir({ hrefCarte, hrefCommande }: Props) {
                 )}
                 <div class="totaux__total"><dt>{textes.panier.total}</dt><dd>{rs(r.total)}</dd></div>
               </dl>
-              <a class="btn btn--tomate btn--large" href={hrefCommande}>{textes.panier.commander}</a>
+              <a class="btn btn--tomate btn--large" href={hrefCommande} onClick={fermer}>{textes.panier.commander}</a>
               <button type="button" class="lien-discret lien-discret--centre" onClick={fermer}>{textes.panier.continuer}</button>
             </div>
           </>

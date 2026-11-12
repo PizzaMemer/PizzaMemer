@@ -1,5 +1,5 @@
 /**
- * Illustration vectorielle d'une pizza vue du dessus — dessin à plat, jamais une photo.
+ * Illustration d'une pizza vue du dessus — dessin au trait monochrome (couleur héritée), jamais une photo.
  * Déterministe : la même pizza donne toujours le même dessin (graine = hash de l'id).
  * Seuls la base, l'id et les ingrédients (par mots-clés) comptent ; un ingrédient inconnu est ignoré.
  */
@@ -115,161 +115,105 @@ export function dessinerPizza(pizza: Pick<Pizza, 'id' | 'base' | 'ingredients'>)
   const tomate = pizza.base === 'tomate';
   const o: string[] = [];
 
-  // Corniche dorée irrégulière
-  const cornichePts: Pt[] = [];
-  for (let i = 0; i < 28; i++) {
-    const ang = (Math.PI * 2 * i) / 28;
-    const r = 95 + (a() - 0.5) * 4.5;
-    cornichePts.push({ x: 100 + r * Math.cos(ang), y: 100 + r * Math.sin(ang) });
-  }
-  o.push(`<path d="${lisse(cornichePts)}" fill="#d99a43"/>`);
-  o.push('<circle cx="100" cy="100" r="89" fill="none" stroke="#e9b766" stroke-width="7" opacity=".75"/>');
-  // Taches « léopard » : zones brûlées et zones claires
-  for (let i = 0; i < 12; i++) {
+  // Corniche : double contour irrégulier
+  const corniche = (r0: number, amp: number): string => {
+    const pts: Pt[] = [];
+    for (let i = 0; i < 28; i++) {
+      const ang = (Math.PI * 2 * i) / 28;
+      const r = r0 + (a() - 0.5) * amp;
+      pts.push({ x: 100 + r * Math.cos(ang), y: 100 + r * Math.sin(ang) });
+    }
+    return lisse(pts);
+  };
+  o.push(`<path d="${corniche(95, 3.5)}" stroke-width="1.4"/>`);
+  o.push(`<path d="${corniche(80, 2.5)}"${tomate ? '' : ' stroke-dasharray="1 3.2"'}/>`);
+  // Quelques alvéoles sur la corniche
+  for (let i = 0; i < 10; i++) {
     const ang = a() * Math.PI * 2;
-    const r = 82 + a() * 11;
-    o.push(`<path d="${tache(100 + r * Math.cos(ang), 100 + r * Math.sin(ang), 4 + a() * 4, 2.5 + a() * 2.5, a() * 3, 0.5, 6, a)}" fill="#f4cd83" opacity=".8"/>`);
+    const r = 87.5;
+    o.push(`<path d="${tache(100 + r * Math.cos(ang), 100 + r * Math.sin(ang), 1.8 + a() * 1.6, 1.2 + a() * 1.2, a() * 3, 0.5, 6, a)}" stroke-width=".9"/>`);
   }
-  for (let i = 0; i < 26; i++) {
-    const ang = a() * Math.PI * 2;
-    const r = 82 + a() * 12;
-    o.push(`<path d="${tache(100 + r * Math.cos(ang), 100 + r * Math.sin(ang), 1.6 + a() * 2.6, 1.2 + a() * 1.8, a() * 3, 0.6, 6, a)}" fill="#7d3d1b" opacity=".85"/>`);
-  }
-
-  // Fond de sauce
-  const saucePts: Pt[] = [];
-  for (let i = 0; i < 24; i++) {
-    const ang = (Math.PI * 2 * i) / 24;
-    const r = 79 + (a() - 0.5) * 3;
-    saucePts.push({ x: 100 + r * Math.cos(ang), y: 100 + r * Math.sin(ang) });
-  }
-  o.push(`<path d="${lisse(saucePts)}" fill="${tomate ? '#cc3a26' : '#f3e4bf'}" stroke="${tomate ? '#a82a1a' : '#d9c18c'}" stroke-width="1.4"/>`);
-  for (const p of semer(6, 60, 26, a)) {
-    o.push(`<path d="${tache(p.x, p.y, 14 + a() * 10, 8 + a() * 6, a() * 3, 0.5, 7, a)}" fill="${tomate ? '#de5436' : '#ead6a6'}" opacity=".7"/>`);
+  if (tomate) {
+    // Sauce : hachures légères
+    for (let y = -56; y <= 56; y += 9) {
+      const demi = Math.sqrt(Math.max(0, 74 * 74 - y * y));
+      o.push(`<path d="M${f(100 - demi)} ${f(100 + y)}L${f(100 + demi)} ${f(100 + y)}" stroke-width=".5" opacity=".35"/>`);
+    }
   }
 
   let couches = 0;
-
-  // Mozzarella (ou fromage seul quand la composition est vide)
-  const mozza = k.mozzarella || pizza.ingredients.length === 0;
   const dessinerMozza = (): void => {
-    for (const p of semer(11, 66, 22, a)) {
+    for (const p of semer(10, 62, 22, a)) {
       const rx = 9 + a() * 6;
-      const ry = rx * (0.7 + a() * 0.3);
-      const rot = a() * 3;
-      const d = tache(p.x, p.y, rx, ry, rot, 0.45, 8, a);
-      o.push(`<path d="${d}" transform="translate(.8 1.4)" fill="#7a3a1a" opacity=".18"/>`);
-      o.push(`<path d="${d}" fill="${tomate ? '#fff5de' : '#fffaf0'}"/>`);
+      o.push(`<path d="${tache(p.x, p.y, rx, rx * (0.7 + a() * 0.3), a() * 3, 0.45, 8, a)}" fill="var(--papier)"/>`);
     }
   };
-  if (mozza) {
+  if (k.mozzarella || pizza.ingredients.length === 0) {
     dessinerMozza();
     couches++;
   }
-
   if (k.cheddar) {
-    for (const p of semer(7, 62, 24, a)) {
+    for (const p of semer(7, 60, 24, a)) {
       const rx = 11 + a() * 7;
-      const d = tache(p.x, p.y, rx, rx * (0.7 + a() * 0.3), a() * 3, 0.5, 8, a);
-      o.push(`<path d="${d}" transform="translate(.8 1.4)" fill="#7a3a1a" opacity=".2"/>`);
-      o.push(`<path d="${d}" fill="#e8962c"/>`);
-      o.push(`<path d="${tache(p.x - 2, p.y - 2, rx * 0.5, rx * 0.35, a() * 3, 0.4, 6, a)}" fill="#f6bf5c"/>`);
+      o.push(`<path d="${tache(p.x, p.y, rx, rx * (0.7 + a() * 0.3), a() * 3, 0.5, 8, a)}" fill="var(--papier)"/>`);
     }
     couches++;
   }
-
   if (k.jambon) {
-    for (const p of semer(7, 62, 24, a)) {
-      const rot = a() * Math.PI;
-      const deg = f((rot * 180) / Math.PI);
-      o.push(
-        `<g transform="translate(${f(p.x)} ${f(p.y)}) rotate(${deg})">` +
-          `<path d="${tache(0, 0, 12, 6.5, 0, 0.25, 8, a)}" fill="#eaa5a1" stroke="#cf7f7e" stroke-width="1"/>` +
-          `<path d="M-7 -1.5 Q0 2.5 7 -1.5" fill="none" stroke="#f6c9c4" stroke-width="1.4" stroke-linecap="round"/></g>`,
-      );
+    for (const p of semer(7, 60, 24, a)) {
+      const deg = f(a() * 180);
+      o.push(`<g transform="translate(${f(p.x)} ${f(p.y)}) rotate(${deg})" fill="var(--papier)"><path d="${tache(0, 0, 12, 6.5, 0, 0.25, 8, a)}"/></g>`);
     }
     couches++;
   }
-
   if (k.champignons) {
-    for (const p of semer(7, 62, 22, a)) {
+    for (const p of semer(7, 60, 22, a)) {
       const deg = f(a() * 360);
-      o.push(
-        `<g transform="translate(${f(p.x)} ${f(p.y)}) rotate(${deg})">` +
-          `<path d="M-8.5 1 C-8.5 -8.5 8.5 -8.5 8.5 1 L3.2 1 L3.2 8.5 C3.2 9.5 -3.2 9.5 -3.2 8.5 L-3.2 1Z" fill="#e7d3ae" stroke="#b08f5f" stroke-width="1" stroke-linejoin="round"/>` +
-          `<path d="M-5 -2.5 Q0 -5.5 5 -2.5" fill="none" stroke="#f6ead0" stroke-width="1.2" stroke-linecap="round"/></g>`,
-      );
+      o.push(`<g transform="translate(${f(p.x)} ${f(p.y)}) rotate(${deg})" fill="var(--papier)"><path d="M-8.5 1C-8.5-8.5 8.5-8.5 8.5 1L3.2 1L3.2 8.5C3.2 9.5-3.2 9.5-3.2 8.5L-3.2 1Z"/></g>`);
     }
     couches++;
   }
-
   if (k.thon) {
-    for (const p of semer(14, 64, 14, a)) {
+    for (const p of semer(14, 62, 14, a)) {
       const rx = 3.6 + a() * 3.4;
-      o.push(`<path d="${tache(p.x, p.y, rx, rx * 0.75, a() * 3, 0.55, 6, a)}" fill="#dbb8a0" stroke="#c39a80" stroke-width=".8"/>`);
+      o.push(`<path d="${tache(p.x, p.y, rx, rx * 0.75, a() * 3, 0.55, 6, a)}" stroke-width=".9"/>`);
     }
     couches++;
   }
-
   if (k.viande) {
-    for (const p of semer(34, 66, 7, a)) {
-      const r = 1.8 + a() * 1.2;
-      o.push(`<circle cx="${f(p.x)}" cy="${f(p.y)}" r="${f(r)}" fill="${a() > 0.4 ? '#69391f' : '#8a5230'}"/>`);
-    }
+    for (const p of semer(30, 62, 7, a)) o.push(`<circle cx="${f(p.x)}" cy="${f(p.y)}" r="${f(1.2 + a() * 1)}" stroke-width=".9"/>`);
     couches++;
   }
-
   if (k.oignon) {
-    for (const p of semer(9, 62, 18, a)) {
+    for (const p of semer(9, 60, 18, a)) {
       const r = 5 + a() * 3.5;
       const a0 = a() * Math.PI * 2;
       const span = 1.7 + a() * 1.6;
-      const arc = (rr: number): string => {
-        const xa = p.x + rr * Math.cos(a0);
-        const ya = p.y + rr * Math.sin(a0);
-        const xb = p.x + rr * Math.cos(a0 + span);
-        const yb = p.y + rr * Math.sin(a0 + span);
-        return `M${f(xa)} ${f(ya)}A${f(rr)} ${f(rr)} 0 ${span > Math.PI ? 1 : 0} 1 ${f(xb)} ${f(yb)}`;
-      };
-      o.push(`<path d="${arc(r)}" fill="none" stroke="#8f3b80" stroke-width="2.4" stroke-linecap="round"/>`);
-      o.push(`<path d="${arc(r - 2.6)}" fill="none" stroke="#cf86bf" stroke-width="1" stroke-linecap="round"/>`);
+      const xa = p.x + r * Math.cos(a0);
+      const ya = p.y + r * Math.sin(a0);
+      const xb = p.x + r * Math.cos(a0 + span);
+      const yb = p.y + r * Math.sin(a0 + span);
+      o.push(`<path d="M${f(xa)} ${f(ya)}A${f(r)} ${f(r)} 0 ${span > Math.PI ? 1 : 0} 1 ${f(xb)} ${f(yb)}" stroke-width="1.3"/>`);
     }
     couches++;
   }
-
   if (k.moutarde) {
-    for (let i = 0; i < 4; i++) {
-      const ang = a() * Math.PI;
-      const dx = Math.cos(ang);
-      const dy = Math.sin(ang);
-      const decal = (i - 1.5) * 22 + (a() - 0.5) * 8;
-      const nx = -dy;
-      const ny = dx;
-      const demi = Math.sqrt(Math.max(0, 66 * 66 - decal * decal));
+    for (let i = 0; i < 3; i++) {
+      const dec = (i - 1) * 24;
+      const demi = Math.sqrt(Math.max(0, 62 * 62 - dec * dec));
       let d = '';
-      const pas = 9;
-      for (let t = -demi, j = 0; t <= demi; t += pas, j++) {
-        const x = 100 + nx * decal + dx * t + nx * (j % 2 ? 4 : -4);
-        const y = 100 + ny * decal + dy * t + ny * (j % 2 ? 4 : -4);
-        d += (j === 0 ? 'M' : 'L') + f(x) + ' ' + f(y);
-      }
-      o.push(`<path d="${d}" fill="none" stroke="#e7b91c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity=".95"/>`);
+      for (let t = -demi, j = 0; t <= demi; t += 9, j++) d += (j === 0 ? 'M' : 'L') + f(100 + t) + ' ' + f(100 + dec + (j % 2 ? 3.5 : -3.5));
+      o.push(`<path d="${d}" stroke-width="1"/>`);
     }
     couches++;
   }
-
-  // Aucun ingrédient reconnu : pizza nature avec fromage
   if (couches === 0) dessinerMozza();
 
   // Basilic : uniquement sur la Margherita
   if (pizza.id === 'margherita') {
-    for (const p of semer(5, 54, 28, a)) {
+    for (const p of semer(5, 52, 28, a)) {
       const deg = f(a() * 360);
-      o.push(
-        `<g transform="translate(${f(p.x)} ${f(p.y)}) rotate(${deg}) scale(1.15)">` +
-          `<path d="M0 -9 C7 -6 7 6 0 9 C-7 6 -7 -6 0 -9Z" fill="#3f8c3e" stroke="#2b6a2d" stroke-width=".8"/>` +
-          `<path d="M0 -7 L0 7" stroke="#8cc77f" stroke-width="1" stroke-linecap="round"/></g>`,
-      );
+      o.push(`<g transform="translate(${f(p.x)} ${f(p.y)}) rotate(${deg}) scale(1.15)"><path d="M0-9C7-6 7 6 0 9C-7 6-7-6 0-9Z" fill="var(--papier)"/><path d="M0-7L0 7" stroke-width=".8"/></g>`);
     }
   }
 

@@ -1,33 +1,41 @@
-/* Jetons de design Pizza Memer — propriétaire : orchestrateur (direction artistique). */
+/* Jetons de design Pizza Memer — direction artistique « sobre, avec des effets classe ».
+   Palette resserrée : crème, brun-noir, tomate (actions uniquement), basilic (WhatsApp et succès). */
 :root {
   /* Couleurs */
-  --creme: #f6eede;        /* fond principal, farine */
-  --papier: #fffaf0;       /* cartes, surfaces */
-  --tomate: #c5301c;       /* action principale */
-  --tomate-fonce: #96200f; /* survol, titres forts */
-  --basilic: #2e6b3a;      /* succès, WhatsApp, touches végétales */
-  --basilic-clair: #e3efdc;
-  --braise: #e09a3c;       /* accent chaud : corniche dorée, étiquettes */
-  --four: #221611;         /* brun-noir "sole du four" : texte, sections sombres */
-  --encre: #2a1d16;        /* texte courant */
-  --encre-douce: #6d5c50;  /* texte secondaire (contraste AA sur --creme) */
-  --trait: #e4d8c2;        /* filets, bordures */
+  --creme: #f5efe4;         /* fond principal */
+  --papier: #fbf8f2;        /* surfaces, champs */
+  --sable: #ece4d4;         /* aplats de section, fond du repli sans photo */
+  --four: #1e1713;          /* brun-noir : texte, sections sombres */
+  --encre: #2a211b;         /* texte courant */
+  --encre-douce: #675a4e;   /* texte secondaire (AA sur crème et sable) */
+  --trait: #d8cdb9;         /* filets */
+  --tomate: #b52d1a;        /* actions */
+  --tomate-fonce: #8c2012;
+  --basilic: #2b6839;       /* WhatsApp, succès */
+  --basilic-clair: #e1ebdd;
+  --laiton: #c9ab78;        /* filet discret sur fond sombre */
 
   /* Typographies (auto-hébergées, voir BaseLayout) */
   --titre: 'Fraunces Variable', 'Fraunces', Georgia, serif;
   --texte: 'Figtree Variable', 'Figtree', system-ui, sans-serif;
 
   /* Échelle fluide */
-  --t-hero: clamp(2.5rem, 8vw + 0.5rem, 5.25rem);
-  --t-h2: clamp(1.9rem, 4vw + 0.6rem, 3.1rem);
-  --t-h3: clamp(1.25rem, 1.2vw + 1rem, 1.6rem);
+  --t-hero: clamp(2.05rem, 1.15rem + 3.6vw, 3.9rem);
+  --t-h1: clamp(2.2rem, 1.3rem + 3.4vw, 3.6rem);
+  --t-h2: clamp(1.7rem, 1.1rem + 2.2vw, 2.6rem);
+  --t-h3: clamp(1.2rem, 1.1rem + 0.5vw, 1.45rem);
   --t-corps: 1.0625rem;
   --t-petit: 0.9rem;
+  --t-micro: 0.72rem;       /* petites capitales */
+  --interlettre-caps: 0.14em;
 
   /* Rythme */
-  --e-1: 0.5rem; --e-2: 1rem; --e-3: 1.5rem; --e-4: 2.5rem; --e-5: 4rem; --e-6: 6.5rem;
-  --rayon: 18px; --rayon-petit: 10px; --rayon-pilule: 999px;
-  --ombre: 0 1px 2px rgb(34 22 17 / 0.06), 0 12px 32px -12px rgb(34 22 17 / 0.22);
+  --e-1: 0.5rem; --e-2: 1rem; --e-3: 1.5rem; --e-4: 2.5rem; --e-5: 4.5rem; --e-6: 7rem;
+  --rayon: 4px; --rayon-petit: 3px;
   --largeur: 1180px;
-  --transition: 180ms cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* Mouvement : courbes douces, 200 à 600 ms */
+  --douce: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --transition: 220ms var(--douce);
+  --apparition: 600ms var(--douce);
 }

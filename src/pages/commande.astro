@@ -1,11 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { metaParPage } from '../lib/seo';
 import Commande from '../components/Commande';
-import { commerce } from '../config/commerce';
 import { textes } from '../content/textes';
 import { url } from '../lib/url';
 ---
-<BaseLayout title={`${textes.commande.titre} — ${commerce.nom}`} description={textes.commande.intro} commande>
+<BaseLayout title={metaParPage.commande.title} description={metaParPage.commande.description} commande noindex>
   <div class="conteneur commande-page">
     <header class="page-tete">
       <h1>{textes.commande.titre}</h1>
