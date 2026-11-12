@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { commerce } from '../config/commerce';
+import { textes } from '../content/textes';
+import { rs } from '../lib/format';
+import { libelles } from '../components/libelles';
+import { fraisZone, joursDistribution } from '../components/outils';
+
+const t = textes.contact;
+const jours = joursDistribution();
+---
+<BaseLayout title={`${t.titre} — ${commerce.nom}`} description={t.intro}>
+  <div class="conteneur">
+    <header class="page-tete">
+      <h1>{t.titre}</h1>
+      <p class="page-tete__intro">{t.intro}</p>
+    </header>
+    <div class="contact-grille page-corps">
+      <section class="contact-bloc contact-bloc--sombre contact-bloc--large" aria-labelledby="c-wa">
+        <h2 id="c-wa">{t.whatsapp.titre}</h2>
+        <p>{commerce.whatsappAffiche}</p>
+        <a class="btn btn--whatsapp" href={`https://wa.me/${commerce.whatsapp}`} rel="noopener">{t.whatsapp.bouton}</a>
+      </section>
+
+      <section class="contact-bloc" aria-labelledby="c-retrait">
+        <h2 id="c-retrait">{t.retrait.titre}</h2>
+        <p>{commerce.adresseRetrait}</p>
+        {commerce.horaires && <p><strong>{libelles.horaires} :</strong> {commerce.horaires}</p>}
+        {commerce.lienCarteRetrait && <p><a class="btn btn--clair" href={commerce.lienCarteRetrait} rel="noopener">{libelles.itineraire}</a></p>}
+      </section>
+
+      <section class="contact-bloc" aria-labelledby="c-jours">
+        <h2 id="c-jours">{t.jours.titre}</h2>
+        <p>{jours.replace(/^./, (c) => c.toUpperCase())}</p>
+        {commerce.mentionStock && <p>{commerce.mentionStock}</p>}
+      </section>
+
+      {commerce.livraison.actif && (
+        <section class="contact-bloc contact-bloc--large" aria-labelledby="c-livraison">
+          <h2 id="c-livraison">{t.livraison.titre}</h2>
+          <ul class="zones">
+            {commerce.livraison.zones.map((z) => (
+              <li>
+                <span class="zones__nom">{z.nom}</span>
+                <span class="zones__pointilles" aria-hidden="true"></span>
+                <span class="zones__prix">{rs(fraisZone(z))}</span>
+                {z.gratuitDes !== null && <span class="zones__offerte">{libelles.offerteDes(rs(z.gratuitDes))}</span>}
+              </li>
+            ))}
+          </ul>
+          <p>{t.livraison.hors}</p>
+        </section>
+      )}
+
+      {commerce.facebook && (
+        <section class="contact-bloc" aria-labelledby="c-fb">
+          <h2 id="c-fb">{t.facebook.titre}</h2>
+          <a class="btn btn--clair" href={commerce.facebook} rel="noopener">{t.facebook.bouton}</a>
+        </section>
+      )}
+    </div>
+  </div>
+</BaseLayout>

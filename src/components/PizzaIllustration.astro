@@ -1,0 +1,12 @@
+---
+import type { Pizza } from '../lib/types';
+import { dessinerPizza } from './illustration';
+
+interface Props {
+  pizza: Pick<Pizza, 'id' | 'base' | 'ingredients'>;
+  class?: string;
+}
+const { pizza, class: classe } = Astro.props;
+const dessin = dessinerPizza(pizza);
+---
+<svg class:list={['illustration', classe]} viewBox="0 0 200 200" width="200" height="200" aria-hidden="true" focusable="false" set:html={dessin} />

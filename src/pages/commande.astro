@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Commande from '../components/Commande';
+import { commerce } from '../config/commerce';
+import { textes } from '../content/textes';
+import { url } from '../lib/url';
+---
+<BaseLayout title={`${textes.commande.titre} — ${commerce.nom}`} description={textes.commande.intro} commande>
+  <div class="conteneur commande-page">
+    <header class="page-tete">
+      <h1>{textes.commande.titre}</h1>
+      <p class="page-tete__intro">{textes.commande.intro}</p>
+    </header>
+    <Commande client:load hrefCarte={url('carte/')} />
+  </div>
+</BaseLayout>

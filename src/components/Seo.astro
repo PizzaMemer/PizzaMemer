@@ -1,0 +1,24 @@
+---
+/** Balises de tête minimales. Interface volontairement simple : l'agent SEO la reprendra. */
+import { url } from '../lib/url';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  type?: string;
+}
+const { title, description, image, type = 'website' } = Astro.props;
+const canonique = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+---
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={description} />
+{canonique && <link rel="canonical" href={canonique} />}
+<meta name="theme-color" content="#f6eede" />
+<link rel="icon" href={url('favicon.svg')} type="image/svg+xml" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content={type} />
+{canonique && <meta property="og:url" content={canonique} />}
+{image && <meta property="og:image" content={image} />}

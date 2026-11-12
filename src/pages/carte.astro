@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PizzaCarte from '../components/PizzaCarte.astro';
+import { commerce } from '../config/commerce';
+import { textes } from '../content/textes';
+import { pizzasVisibles } from '../lib/catalogue';
+import { url } from '../lib/url';
+import { libelles } from '../components/libelles';
+
+const visibles = pizzasVisibles();
+const rq = commerce.remises.quantite;
+const illustre = visibles.some((p) => !p.photo);
+---
+<BaseLayout title={`${textes.carte.titre} — ${commerce.nom}`} description={textes.carte.intro}>
+  <div class="conteneur">
+    <header class="page-tete">
+      <h1>{textes.carte.titre}</h1>
+      <p class="page-tete__intro">{textes.carte.intro}</p>
+    </header>
+    <div class="carte-outils">
+      {rq.actif && <p class="bandeau" style="margin:0">{libelles.remiseQuantite(rq.pourcentage, rq.aPartirDe)}</p>}
+      <a class="btn btn--clair" href={url('carte.pdf')} download>{textes.carte.telecharger}</a>
+    </div>
+    <div class="plats page-corps">
+      {visibles.map((p, i) => <PizzaCarte pizza={p} index={i} />)}
+    </div>
+    {illustre && <p class="note-illustration">{textes.carte.illustration}</p>}
+  </div>
+</BaseLayout>

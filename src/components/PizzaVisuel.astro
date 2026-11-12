@@ -1,0 +1,34 @@
+---
+/**
+ * Visuel rond d'une pizza : photo réelle (src/assets/pizzas/) si elle existe, sinon l'illustration.
+ */
+import { Picture } from 'astro:assets';
+import type { Pizza } from '../lib/types';
+import PizzaIllustration from './PizzaIllustration.astro';
+import { photoPizza } from './marque';
+
+interface Props {
+  pizza: Pizza;
+  /** Visuel du haut de page : chargé immédiatement. */
+  heros?: boolean;
+  sizes?: string;
+  class?: string;
+}
+const { pizza, heros = false, sizes = '(min-width: 900px) 360px, 60vw', class: classe } = Astro.props;
+const photo = photoPizza(pizza.photo, pizza.id);
+---
+<div class:list={['disque', classe]}>
+  {photo ? (
+    <Picture
+      src={photo}
+      alt={pizza.nom}
+      formats={['avif', 'webp']}
+      widths={[240, 360, 480, 720, 960]}
+      sizes={sizes}
+      loading={heros ? 'eager' : 'lazy'}
+      class="disque__photo"
+    />
+  ) : (
+    <PizzaIllustration pizza={pizza} />
+  )}
+</div>

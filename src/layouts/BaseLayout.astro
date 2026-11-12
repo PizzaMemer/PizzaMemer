@@ -1,0 +1,116 @@
+---
+import '../styles/tokens.css';
+import '../styles/fonts.css';
+import '../styles/base.css';
+import '../styles/layout.css';
+import '../styles/plats.css';
+import '../styles/pages.css';
+import '../styles/commande.css';
+import titreWoff2 from '@fontsource-variable/fraunces/files/fraunces-latin-opsz-normal.woff2?url';
+import texteWoff2 from '@fontsource-variable/figtree/files/figtree-latin-wght-normal.woff2?url';
+import { commerce } from '../config/commerce';
+import { textes } from '../content/textes';
+import Seo from '../components/Seo.astro';
+import Logo from '../components/Logo.astro';
+import PanierBouton from '../components/PanierBouton';
+import PanierTiroir from '../components/PanierTiroir';
+import BarrePanier from '../components/BarrePanier';
+import { libelles } from '../components/libelles';
+import { joursDistribution, remplir } from '../components/outils';
+import { url } from '../lib/url';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  type?: string;
+  /** Page de commande : ni tiroir ni barre collante. */
+  commande?: boolean;
+}
+const { title, description, image, type, commande = false } = Astro.props;
+
+const liens = [
+  { href: url('carte/'), nom: textes.nav.carte },
+  { href: url('comment-ca-marche/'), nom: textes.nav.commentCaMarche },
+  { href: url('contact/'), nom: textes.nav.contact },
+  { href: url('commande/'), nom: textes.nav.commander },
+];
+const chemin = Astro.url.pathname;
+const courant = (href: string) => chemin === href || chemin === href.replace(/\/$/, '');
+const annee = new Date().getFullYear();
+---
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <Seo title={title} description={description} image={image} type={type} />
+    <link rel="preload" href={titreWoff2} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={texteWoff2} as="font" type="font/woff2" crossorigin />
+  </head>
+  <body>
+    <a class="evitement" href="#contenu">{libelles.evitement}</a>
+    <header class="entete">
+      <div class="conteneur entete__interieur">
+        <a class="entete__logo" href={url()} aria-label={`${commerce.nom} — ${textes.nav.accueil}`}>
+          <Logo />
+        </a>
+        <nav id="menu-principal" class="nav" aria-label="Navigation principale" data-ouvert="false">
+          <ul>
+            {liens.map((l) => (
+              <li><a class="nav__lien" href={l.href} aria-current={courant(l.href) ? 'page' : undefined}>{l.nom}</a></li>
+            ))}
+          </ul>
+        </nav>
+        <PanierBouton client:idle href={url('commande/')} />
+        <button type="button" class="burger" data-menu-bouton aria-expanded="false" aria-controls="menu-principal" aria-label={libelles.menu}>
+          <span class="burger__traits"></span>
+        </button>
+      </div>
+    </header>
+
+    <main id="contenu" tabindex="-1">
+      <slot />
+    </main>
+
+    <footer class="pied">
+      <div class="conteneur">
+        <div class="pied__grille">
+          <div>
+            <Logo clair />
+            <p class="pied__texte">{textes.pied.texte}</p>
+          </div>
+          <nav aria-label={libelles.piedLiens}>
+            <h2>{libelles.piedLiens}</h2>
+            <ul>
+              <li><a href={url()}>{textes.nav.accueil}</a></li>
+              {liens.map((l) => <li><a href={l.href}>{l.nom}</a></li>)}
+            </ul>
+          </nav>
+          <div>
+            <h2>{libelles.piedCoordonnees}</h2>
+            <p><a href={`https://wa.me/${commerce.whatsapp}`} rel="noopener">WhatsApp : {commerce.whatsappAffiche}</a></p>
+            <p>{commerce.adresseRetrait}</p>
+            {commerce.horaires && <p>{commerce.horaires}</p>}
+            {commerce.facebook && <p><a href={commerce.facebook} rel="noopener">Facebook</a></p>}
+          </div>
+          <div>
+            <h2>{libelles.piedJours}</h2>
+            <p>{joursDistribution().replace(/^./, (c) => c.toUpperCase())}</p>
+            {commerce.mentionStock && <p class="pied__stock">{commerce.mentionStock}</p>}
+          </div>
+        </div>
+        <div class="pied__bas"><p>{remplir(textes.pied.mentions, { annee })}</p></div>
+      </div>
+    </footer>
+
+    {!commande && <PanierTiroir client:idle hrefCarte={url('carte/')} hrefCommande={url('commande/')} />}
+    <BarrePanier client:idle href={url('commande/')} masquer={commande} />
+    <div id="annonces" class="sr-only" role="status" aria-live="polite"></div>
+
+    <script>
+      import '../components/scripts/interface';
+      import '../components/scripts/ajout';
+    </script>
+  </body>
+</html>

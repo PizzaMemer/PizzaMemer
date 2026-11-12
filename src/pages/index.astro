@@ -1,0 +1,129 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Logo from '../components/Logo.astro';
+import PizzaCarte from '../components/PizzaCarte.astro';
+import PizzaVisuel from '../components/PizzaVisuel.astro';
+import { Picture } from 'astro:assets';
+import { commerce } from '../config/commerce';
+import { textes } from '../content/textes';
+import { pizzasVisibles } from '../lib/catalogue';
+import { url } from '../lib/url';
+import { imageHero } from '../components/marque';
+import { libelles } from '../components/libelles';
+import { joursDistribution } from '../components/outils';
+
+const visibles = pizzasVisibles();
+const selection = visibles.slice(0, 4);
+const vedette = visibles.find((p) => p.id === 'margherita') ?? visibles[0];
+const rq = commerce.remises.quantite;
+const accroche = textes.accueil.accroche.replace(/napolitaine/, '<em>napolitaine</em>');
+const jours = joursDistribution();
+---
+<BaseLayout title={`${commerce.nom} — pizzas napolitaines à finir chez vous`} description={textes.accueil.intro}>
+  <section class="hero" aria-labelledby="titre-hero">
+    <div class="conteneur hero__grille">
+      <div class="hero__disque" data-tourne>
+        {imageHero ? (
+          <div class="disque">
+            <Picture src={imageHero} alt="" formats={['avif', 'webp']} widths={[480, 720, 1080]} sizes="(min-width: 900px) 57vw, 112vw" loading="eager" class="disque__photo" />
+          </div>
+        ) : vedette ? (
+          <PizzaVisuel pizza={vedette} heros sizes="(min-width: 900px) 57vw, 112vw" />
+        ) : null}
+      </div>
+      <div class="hero__texte">
+        <Logo empile class="hero__logo" />
+        <h1 id="titre-hero" class="hero__accroche" set:html={accroche} />
+        <p class="hero__intro">{textes.accueil.intro}</p>
+        <div class="boutons">
+          <a class="btn btn--tomate" href={url('carte/')}>{textes.accueil.boutonCarte}</a>
+          <a class="btn btn--clair" href={url('commande/')}>{textes.accueil.boutonCommander}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="titre-concept">
+    <div class="conteneur">
+      <div class="section__tete" data-reveal><h2 id="titre-concept">{textes.accueil.concept.titre}</h2></div>
+      <ol class="etapes">
+        {textes.accueil.concept.etapes.map((e, i) => (
+          <li data-reveal>
+            <span class="etapes__num" aria-hidden="true">{i + 1}</span>
+            <h3>{e.titre}</h3>
+            <p>{e.texte}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  {selection.length > 0 && (
+    <section class="section" aria-labelledby="titre-selection">
+      <div class="conteneur">
+        <div class="section__tete" data-reveal>
+          <div>
+            <h2 id="titre-selection">{textes.accueil.selection.titre}</h2>
+            <p class="section__sous">{textes.accueil.selection.sousTitre}</p>
+          </div>
+          <a class="lien-fleche" href={url('carte/')}>{textes.accueil.selection.lienToutVoir}</a>
+        </div>
+        <div class="plats plats--quatre">
+          {selection.map((p, i) => <PizzaCarte pizza={p} index={i} />)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section--sombre" aria-labelledby="titre-avantages">
+    <div class="conteneur">
+      <h2 id="titre-avantages" class="titre-section" data-reveal>{textes.accueil.avantages.titre}</h2>
+      <ul class="avantages">
+        {textes.accueil.avantages.items.map((a) => (
+          <li data-reveal><h3>{a.titre}</h3><p>{a.texte}</p></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-label="Infos pratiques">
+    <div class="conteneur">
+      <div class="ticket" data-reveal>
+        <div>
+          <h3>{textes.contact.jours.titre}</h3>
+          <p class="ticket__gros">{jours.replace(/^./, (c) => c.toUpperCase())}</p>
+        </div>
+        <div>
+          <h3>{textes.contact.retrait.titre}</h3>
+          <p>{commerce.adresseRetrait}</p>
+          {commerce.livraison.actif && <p>{textes.contact.livraison.titre}</p>}
+        </div>
+        {rq.actif && (
+          <div>
+            <h3>{libelles.remisesLigne}</h3>
+            <p class="ticket__gros">{libelles.remiseQuantite(rq.pourcentage, rq.aPartirDe)}</p>
+          </div>
+        )}
+        {commerce.mentionStock && <p class="ticket__stock">{commerce.mentionStock}</p>}
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tomate" aria-labelledby="titre-final">
+    <div class="conteneur">
+      <div class="final" data-reveal>
+        <h2 id="titre-final">{textes.accueil.final.titre}</h2>
+        <p>{textes.accueil.final.texte}</p>
+        <div class="boutons">
+          <a class="btn btn--papier" href={url('carte/')}>{textes.accueil.boutonCarte}</a>
+          <a class="btn btn--clair" href={url('commande/')}>{textes.accueil.boutonCommander}</a>
+        </div>
+      </div>
+    </div>
+    {vedette && (
+      <div class="final__disque" aria-hidden="true">
+        <PizzaVisuel pizza={vedette} />
+      </div>
+    )}
+  </section>
+</BaseLayout>

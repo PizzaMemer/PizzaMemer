@@ -1,0 +1,118 @@
+/* Sections */
+.section { padding: var(--e-5) 0; position: relative; }
+.section--sombre { position: relative; background: var(--four); color: #eee3cf; padding: var(--e-6) 0; overflow: clip; }
+.section--sombre h2, .section--sombre h3 { color: var(--creme); }
+.section--sombre::after { content: ''; position: absolute; inset: auto -10% -45% auto; width: 70%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(closest-side, rgb(224 154 60 / 0.22), transparent); pointer-events: none; }
+.section--tomate { position: relative; background: var(--tomate); color: #fff; padding: var(--e-6) 0; overflow: clip; }
+.section--tomate h2 { color: #fff; }
+.section--papier { background: var(--papier); border-block: 1px solid var(--trait); }
+.section__tete { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 0.75rem 2rem; margin-bottom: var(--e-4); }
+.section__sous { color: var(--encre-douce); margin: 0.6rem 0 0; max-width: 52ch; }
+.lien-fleche { font-weight: 700; display: inline-flex; align-items: center; min-height: 44px; }
+
+/* En-tête de page intérieure */
+.page-tete { padding: var(--e-5) 0 var(--e-3); }
+.page-tete h1 { font-size: clamp(2.3rem, 6vw + 0.5rem, 4.2rem); }
+.page-tete__intro { max-width: 60ch; margin: 1rem 0 0; color: var(--encre-douce); font-size: 1.12rem; }
+.page-corps { padding-bottom: var(--e-5); }
+
+/* Héros */
+.hero { position: relative; overflow: clip; padding: 0 0 var(--e-5); }
+.hero__grille { position: relative; display: grid; gap: var(--e-3); }
+.hero__disque { order: -1; width: min(112vw, 540px); margin: 0.5rem -24vw 0 auto; }
+.hero__disque .disque { filter: drop-shadow(0 18px 22px rgb(34 22 17 / 0.28)); }
+.hero__logo { display: none; margin-bottom: 1.5rem; }
+.hero__accroche { max-width: 14ch; }
+.hero__intro { font-size: 1.15rem; max-width: 46ch; margin: 1.25rem 0 1.75rem; }
+@media (min-width: 900px) {
+  .hero { min-height: 680px; display: grid; align-items: center; padding: var(--e-5) 0; }
+  .hero__grille { grid-template-columns: minmax(0, 560px); }
+  .hero__disque { position: absolute; order: 0; right: -9vw; top: 50%; transform: translateY(-50%); width: min(57vw, 800px); margin: 0; }
+  .hero__logo { display: block; }
+  .hero__accroche { max-width: 13ch; }
+}
+@media (min-width: 1500px) { .hero__disque { right: calc((100vw - 1500px) / -2 - 120px); } }
+
+/* Concept en étapes */
+.etapes { list-style: none; display: grid; gap: var(--e-4); counter-reset: etape; }
+.etapes li { position: relative; padding-left: 4.75rem; min-height: 4rem; }
+.etapes__num { position: absolute; left: 0; top: -0.35rem; font: 300 italic 4.6rem / 1 var(--titre); color: var(--tomate); font-variation-settings: 'opsz' 144; }
+.etapes h3 { margin-bottom: 0.4rem; }
+.etapes p { margin: 0; color: var(--encre-douce); max-width: 34ch; }
+@media (min-width: 900px) {
+  .etapes { grid-template-columns: repeat(4, 1fr); gap: var(--e-3); }
+  .etapes li { padding: 5.2rem 0 0; }
+  .etapes__num { top: 0; font-size: 6rem; }
+  .etapes li:nth-child(2) { margin-top: 1.5rem; }
+  .etapes li:nth-child(3) { margin-top: 3rem; }
+  .etapes li:nth-child(4) { margin-top: 4.5rem; }
+}
+
+/* Avantages (sombre) */
+.avantages { list-style: none; display: grid; gap: var(--e-3); position: relative; z-index: 1; margin-top: var(--e-4); }
+.avantages li { border-top: 2px solid var(--braise); padding-top: 1rem; }
+.avantages h3 { margin-bottom: 0.5rem; }
+.avantages p { margin: 0; color: #d9cdb6; max-width: 38ch; }
+@media (min-width: 760px) { .avantages { grid-template-columns: repeat(2, 1fr); gap: var(--e-4) var(--e-4); } .section--sombre .titre-section { max-width: 18ch; } }
+@media (min-width: 1100px) { .avantages { grid-template-columns: repeat(4, 1fr); gap: var(--e-3); } }
+
+/* Rappel pratique : ticket */
+.ticket { display: grid; gap: 1.5rem; border: 2px dashed var(--encre-douce); border-radius: var(--rayon); padding: 1.5rem; background: var(--papier); }
+.ticket h3 { font-size: 1.15rem; margin-bottom: 0.4rem; }
+.ticket p { margin: 0; }
+.ticket__gros { font: 800 1.7rem / 1.1 var(--titre); color: var(--tomate-fonce); }
+.ticket__stock { grid-column: 1 / -1; margin: 0; color: var(--encre-douce); font-style: italic; }
+@media (min-width: 800px) { .ticket { grid-template-columns: repeat(3, 1fr); padding: 2rem 2.5rem; gap: 2rem; } }
+
+/* Appel à l'action final */
+.final { position: relative; z-index: 1; max-width: 640px; }
+.final p { font-size: 1.15rem; margin: 1rem 0 1.75rem; max-width: 48ch; }
+.final__disque { position: absolute; width: min(70vw, 420px); right: -22vw; bottom: -18vw; opacity: 0.95; }
+.final__disque .disque { filter: none; opacity: 0.9; }
+@media (min-width: 900px) { .final__disque { width: 520px; right: -60px; bottom: -150px; } }
+.section--tomate .btn--clair { color: #fff; border-color: rgb(255 255 255 / 0.8); }
+.section--tomate .btn--clair:hover { background: #fff; color: var(--tomate-fonce); }
+.section--tomate a:focus-visible { outline-color: #fff; }
+
+/* Carte */
+.bandeau { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; padding: 0.9rem 1.25rem; margin: 0 0 var(--e-3); border-radius: var(--rayon); background: var(--basilic-clair); color: #1f4a28; font-weight: 600; }
+.carte-outils { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; align-items: center; justify-content: space-between; margin: var(--e-3) 0; }
+.note-illustration { margin: var(--e-4) 0 0; color: var(--encre-douce); font-size: var(--t-petit); text-align: center; }
+
+/* Comment ça marche */
+.bloc { padding: var(--e-4) 0; border-top: 1px solid var(--trait); display: grid; gap: var(--e-2); }
+.bloc__titre { font-size: var(--t-h2); }
+.pas { list-style: none; display: grid; gap: 1.25rem; counter-reset: pas; max-width: 62ch; }
+.pas li { display: grid; grid-template-columns: 3.6rem 1fr; align-items: baseline; gap: 0.5rem; font-size: 1.15rem; }
+.pas__num { font: 300 italic 3.4rem / 0.9 var(--titre); color: var(--tomate); font-variation-settings: 'opsz' 144; }
+.liste-simple { list-style: none; display: grid; gap: 0.6rem; max-width: 60ch; }
+.liste-simple li { padding-left: 1.5rem; position: relative; }
+.liste-simple li::before { content: ''; position: absolute; left: 0; top: 0.6em; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--braise); }
+.astuce { margin: 0; color: var(--encre-douce); font-style: italic; max-width: 60ch; }
+.faq { display: grid; gap: 0.5rem; max-width: 760px; }
+.faq details { background: var(--papier); border: 1px solid var(--trait); border-radius: var(--rayon-petit); }
+.faq summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 52px; padding: 0.7rem 1.1rem; font: 700 1.1rem / 1.3 var(--titre); }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: '+'; font: 400 1.6rem / 1 var(--texte); color: var(--tomate); flex: none; transition: transform var(--transition); }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq details p { margin: 0; padding: 0 1.1rem 1.1rem; max-width: 60ch; }
+
+/* Contact */
+.contact-grille { display: grid; gap: var(--e-4); }
+.contact-bloc { padding: 1.5rem; background: var(--papier); border: 1px solid var(--trait); border-radius: var(--rayon); }
+.contact-bloc h2 { font-size: 1.6rem; margin-bottom: 0.75rem; }
+.contact-bloc p { margin: 0 0 1rem; }
+.contact-bloc p:last-child { margin-bottom: 0; }
+.zones { list-style: none; margin: 0 0 1rem; }
+.zones li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.6rem; padding: 0.45rem 0; }
+.zones__nom { font-weight: 600; }
+.zones__pointilles { flex: 1 1 1rem; min-width: 1rem; border-bottom: 2px dotted rgb(109 92 80 / 0.55); transform: translateY(-0.3em); }
+.zones__prix { font-variant-numeric: tabular-nums; font-weight: 700; }
+.zones__offerte { flex-basis: 100%; font-size: var(--t-petit); color: var(--basilic); font-weight: 600; }
+.contact-bloc--sombre { background: var(--four); color: #eee3cf; border-color: var(--four); }
+.contact-bloc--sombre h2 { color: var(--creme); }
+@media (min-width: 800px) { .contact-grille { grid-template-columns: repeat(2, 1fr); align-items: start; } .contact-bloc--large { grid-column: 1 / -1; } }
+
+/* 404 */
+.page-404 { padding: var(--e-5) 0 var(--e-6); display: grid; gap: var(--e-3); justify-items: start; }
+.page-404__disque { width: min(60vw, 260px); }

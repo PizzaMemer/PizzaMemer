@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { commerce } from '../config/commerce';
+import { textes } from '../content/textes';
+import { url } from '../lib/url';
+
+const t = textes.commentCaMarche;
+const { cuisson, conservation, congelation } = commerce.preparation;
+---
+<BaseLayout title={`${t.titre} — ${commerce.nom}`} description={t.intro}>
+  <div class="conteneur--etroit" style="width:min(100% - 2rem, 900px);margin-inline:auto">
+    <header class="page-tete">
+      <h1>{t.titre}</h1>
+      <p class="page-tete__intro">{t.intro}</p>
+    </header>
+
+    {cuisson.length > 0 && (
+      <section class="bloc" aria-labelledby="t-cuisson">
+        <h2 class="bloc__titre" id="t-cuisson">{t.cuisson.titre}</h2>
+        <ol class="pas">
+          {cuisson.map((e, i) => <li><span class="pas__num" aria-hidden="true">{i + 1}</span><span>{e}</span></li>)}
+        </ol>
+        <p class="astuce">{t.cuisson.astuce}</p>
+      </section>
+    )}
+
+    {conservation.length > 0 && (
+      <section class="bloc" aria-labelledby="t-conservation">
+        <h2 class="bloc__titre" id="t-conservation">{t.conservation.titre}</h2>
+        <ul class="liste-simple">{conservation.map((e) => <li>{e}</li>)}</ul>
+      </section>
+    )}
+
+    {congelation.length > 0 && (
+      <section class="bloc" aria-labelledby="t-congelation">
+        <h2 class="bloc__titre" id="t-congelation">{t.congelation.titre}</h2>
+        <ul class="liste-simple">{congelation.map((e) => <li>{e}</li>)}</ul>
+      </section>
+    )}
+
+    <section class="bloc" aria-labelledby="t-commander">
+      <h2 class="bloc__titre" id="t-commander">{t.commander.titre}</h2>
+      <ol class="pas">
+        {t.commander.etapes.map((e, i) => <li><span class="pas__num" aria-hidden="true">{i + 1}</span><span>{e}</span></li>)}
+      </ol>
+      <p><a class="btn btn--tomate" href={url('carte/')}>{textes.accueil.boutonCarte}</a></p>
+    </section>
+
+    <section class="bloc page-corps" aria-labelledby="t-faq">
+      <h2 class="bloc__titre" id="t-faq">Questions fréquentes</h2>
+      <div class="faq">
+        {t.faq.map((q) => (
+          <details>
+            <summary>{q.question}</summary>
+            <p>{q.reponse}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>
