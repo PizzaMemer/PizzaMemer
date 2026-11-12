@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pizzamemer.github.io/PizzaMemer/sitemap-index.xml

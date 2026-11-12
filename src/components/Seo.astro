@@ -1,24 +1,62 @@
 ---
-/** Balises de tête minimales. Interface volontairement simple : l'agent SEO la reprendra. */
+/**
+ * Balises de tête SEO : title, description, canonique, robots, Open Graph, Twitter, sitemap
+ * et données structurées JSON-LD. Propriétaire : agent seo.
+ *
+ * Le charset est déjà rendu par BaseLayout : il n'est pas répété ici.
+ * Les URL absolues sont construites à partir de Astro.site (ou, à défaut, de commerce.urlSite).
+ */
+import { commerce } from '../config/commerce';
 import { url } from '../lib/url';
 
 interface Props {
   title: string;
   description: string;
+  /** Image de partage : chemin absolu ("/PizzaMemer/…") ou URL complète. Défaut : og.jpg. */
   image?: string;
+  /** Type Open Graph, "website" par défaut. */
   type?: string;
+  /** true = la page n'est pas indexée (ex. page 404). */
+  noindex?: boolean;
+  /** Données structurées JSON-LD à ajouter à la page (un objet ou une liste). */
+  jsonLd?: object | object[];
 }
-const { title, description, image, type = 'website' } = Astro.props;
-const canonique = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+
+const { title, description, image, type = 'website', noindex = false, jsonLd } = Astro.props;
+
+const origine = Astro.site ?? new URL(commerce.urlSite);
+const canonique = new URL(Astro.url.pathname, origine).href;
+const imageParDefaut = new URL(`${import.meta.env.BASE_URL}og.jpg`, origine).href;
+const imagePartage = image ? new URL(image, origine).href : imageParDefaut;
+const altImage = image ? title : 'Pizza napolitaine artisanale de Pizza Memer';
+const sitemap = new URL(`${import.meta.env.BASE_URL}sitemap-index.xml`, origine).href;
+
+const blocsJsonLd = jsonLd === undefined ? [] : Array.isArray(jsonLd) ? jsonLd : [jsonLd];
 ---
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>{title}</title>
 <meta name="description" content={description} />
-{canonique && <link rel="canonical" href={canonique} />}
+<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow'} />
+<link rel="canonical" href={canonique} />
+<link rel="sitemap" type="application/xml" title="Plan du site" href={sitemap} />
 <meta name="theme-color" content="#f6eede" />
 <link rel="icon" href={url('favicon.svg')} type="image/svg+xml" />
+
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={commerce.nom} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:type" content={type} />
-{canonique && <meta property="og:url" content={canonique} />}
-{image && <meta property="og:image" content={image} />}
+<meta property="og:url" content={canonique} />
+<meta property="og:image" content={imagePartage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={altImage} />
+<meta property="og:locale" content="fr_FR" />
+
+<meta name="twitter:card" content="summary_large_image" />
+
+{
+  blocsJsonLd.map((bloc) => (
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(bloc).replace(/</g, '\\u003c')} />
+  ))
+}
