@@ -23,7 +23,7 @@ const illustre = visibles.some((p) => !p.photo);
       <a class="souligne" href={url('carte.pdf')} download>{textes.carte.telecharger}</a>
     </div>
     <div class="plats">
-      {visibles.map((p) => <PizzaCarte pizza={p} />)}
+      {visibles.map((p) => <PizzaCarte pizza={p} niveau={2} />)}
     </div>
     {illustre && <p class="note-illustration">{textes.carte.illustration}</p>}
     <div class="page-corps"></div>
