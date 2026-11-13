@@ -18,7 +18,7 @@ export const catalogueTest: Pizza[] = [
 export function configTest(surcharge: Partial<Commerce> = {}): Commerce {
   return {
     nom: 'Test', lieu: 'Lieu', adresseRetrait: '1 rue du Test', lienCarteRetrait: '', horaires: '',
-    whatsapp: '23050000000', whatsappAffiche: '5000 0000', facebook: '', urlSite: 'https://x.test',
+    whatsapp: '23050000000', whatsappAffiche: '5000 0000', facebook: '', chaineWhatsapp: '', urlSite: 'https://x.test',
     distribution: {
       jours: [4, 5, 6], fermetures: [], nombreDatesProposees: 6, jourMemeAutorise: true,
       heureLimiteJourMeme: null, conseil: '', mentionJourMeme: '',

@@ -46,5 +46,13 @@ export const libelles = {
   chiffrePizzas: 'pizzas à la carte',
   chiffreRemise: (n: number) => `de remise dès ${n} pizzas`,
   chiffreJours: 'jours de distribution par semaine',
+  chaine: {
+    titre: 'La chaîne WhatsApp',
+    texte: (nom: string) => `Suivez la chaîne ${nom} pour recevoir mes actualités directement dans WhatsApp. Scannez le code avec votre téléphone, ou appuyez sur le bouton.`,
+    bouton: 'Suivre la chaîne',
+    telecharger: 'Télécharger le QR code',
+    qrAlt: 'QR code de la chaîne WhatsApp Pizza Memer',
+    pied: 'Chaîne WhatsApp',
+  },
   lienWhatsAppFallback: 'Si WhatsApp ne s’est pas ouvert, utilisez ce lien :',
 } as const;

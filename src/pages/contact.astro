@@ -6,6 +6,7 @@ import { textes } from '../content/textes';
 import { rs } from '../lib/format';
 import Marquee from '../components/Marquee.astro';
 import Revele from '../components/Revele.astro';
+import ChaineWhatsapp from '../components/ChaineWhatsapp.astro';
 import { libelles } from '../components/libelles';
 import { fraisZone, joursDistribution } from '../components/outils';
 
@@ -24,6 +25,12 @@ const jours = joursDistribution();
         <p>{commerce.whatsappAffiche}</p>
         <a class="btn btn--whatsapp" href={`https://wa.me/${commerce.whatsapp}`} rel="noopener">{t.whatsapp.bouton}</a>
       </section>
+
+      {commerce.chaineWhatsapp && (
+        <section class="contact-bloc contact-bloc--large" aria-labelledby="c-chaine">
+          <ChaineWhatsapp id="c-chaine" />
+        </section>
+      )}
 
       <section class="contact-bloc" aria-labelledby="c-retrait">
         <h2 id="c-retrait">{t.retrait.titre}</h2>

@@ -1,0 +1,27 @@
+---
+/** Bloc « chaîne WhatsApp » : QR aux couleurs du site + bouton. Rien n'est rendu sans lien configuré. */
+import { commerce } from '../config/commerce';
+import { libelles } from './libelles';
+import { qrMarqueSvg, urlChaine } from '../lib/pdf/qr-marque';
+import { url } from '../lib/url';
+
+interface Props { niveau?: 2 | 3; id?: string }
+const { niveau = 2, id = 'titre-chaine' } = Astro.props;
+const lien = urlChaine();
+const Titre = `h${niveau}` as 'h2' | 'h3';
+---
+{lien && (
+  <div class="chaine">
+    <a class="chaine__qr" href={lien} rel="noopener" aria-label={libelles.chaine.qrAlt}>
+      <Fragment set:html={qrMarqueSvg(lien).replace('<svg ', `<svg role="img" aria-label="${libelles.chaine.qrAlt}" `)} />
+    </a>
+    <div class="chaine__texte">
+      <Titre id={id}>{libelles.chaine.titre}</Titre>
+      <p>{libelles.chaine.texte(commerce.nom)}</p>
+      <div class="boutons">
+        <a class="btn btn--whatsapp" href={lien} rel="noopener">{libelles.chaine.bouton}</a>
+        <a class="lien-gras" href={url('qr/chaine.png')} download="qr-chaine-whatsapp-pizza-memer.png">{libelles.chaine.telecharger}</a>
+      </div>
+    </div>
+  </div>
+)}

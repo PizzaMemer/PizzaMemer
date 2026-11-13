@@ -5,6 +5,7 @@ import PizzaCarte from '../components/PizzaCarte.astro';
 import PizzaIllustration from '../components/PizzaIllustration.astro';
 import Photo from '../components/Photo.astro';
 import Revele from '../components/Revele.astro';
+import ChaineWhatsapp from '../components/ChaineWhatsapp.astro';
 import Marquee from '../components/Marquee.astro';
 import { commerce } from '../config/commerce';
 import { textes } from '../content/textes';
@@ -126,6 +127,14 @@ const paton = await photoAmbiance('paton.jpg');
       </div>
     </div>
   </section>
+
+  {commerce.chaineWhatsapp && (
+    <section class="section section--jaune" aria-labelledby="titre-chaine">
+      <div class="conteneur" data-reveal>
+        <ChaineWhatsapp />
+      </div>
+    </section>
+  )}
 
   <section class="section section--rouge sur-rouge final" aria-labelledby="titre-final">
     <div class="conteneur final__grille">

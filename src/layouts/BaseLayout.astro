@@ -96,6 +96,7 @@ const annee = new Date().getFullYear();
             <p><a class="souligne" href={`https://wa.me/${commerce.whatsapp}`} rel="noopener">WhatsApp : {commerce.whatsappAffiche}</a></p>
             <p>{commerce.adresseRetrait}</p>
             {commerce.horaires && <p>{commerce.horaires}</p>}
+            {commerce.chaineWhatsapp && <p><a class="souligne" href={commerce.chaineWhatsapp} rel="noopener">{libelles.chaine.pied}</a></p>}
             {commerce.facebook && <p><a class="souligne" href={commerce.facebook} rel="noopener">Facebook</a></p>}
           </div>
           <div>

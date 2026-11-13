@@ -528,3 +528,10 @@ Erreurs les plus fréquentes :
 - **Un nom de photo mal orthographié** : ce n'est pas une erreur bloquante. Le site se met en ligne, mais la pizza affiche le dessin à la place de la photo. Vérifiez le nom et l'extension.
 - **Une date au mauvais format** : `'2026-12-31'` est correct, pas `'31/12/2026'`.
 - **Un crochet ou une accolade oubliés** : vérifiez que chaque `[` a son `]` et chaque `{` son `}`.
+
+## Chaîne WhatsApp
+
+Le lien de la chaîne se règle dans `src/config/commerce.ts`, ligne `chaineWhatsapp`.
+Le bloc « La chaîne WhatsApp » (accueil et page contact), le lien du pied de page et le QR code aux
+couleurs du site sont générés à partir de ce lien. Mettre `''` fait disparaître le tout.
+Le QR code se télécharge à l'adresse `/PizzaMemer/qr/chaine.png` (ou `chaine.svg`).

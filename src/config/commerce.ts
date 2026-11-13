@@ -25,6 +25,8 @@ export const commerce: Commerce = {
   whatsappAffiche: '5477 8439',
   /** Adresse complète de la page Facebook. À COMPLÉTER ("" = pas de lien Facebook). */
   facebook: '',
+  /** Lien de la chaîne WhatsApp ("" = le bloc et son QR code disparaissent du site). */
+  chaineWhatsapp: 'https://whatsapp.com/channel/0029VbDk91j47XeL8KRZui44',
 
   // ── Adresse publique du site (sert au QR code, au partage, au référencement) ──
   /** NE CHANGEZ PAS cette adresse après avoir imprimé le QR code sur les boîtes. */

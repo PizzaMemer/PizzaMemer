@@ -47,6 +47,7 @@ export interface Commerce {
   whatsapp: string;
   whatsappAffiche: string;
   facebook: string;
+  chaineWhatsapp: string;
   urlSite: string;
   distribution: {
     jours: number[];

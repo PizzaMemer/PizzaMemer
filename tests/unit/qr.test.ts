@@ -98,3 +98,17 @@ describe('étiquette PNG', () => {
     expect(await vuParTelephone(await genererEtiquettePng(), COTE_MM)).toBe(urlCarte());
   });
 });
+
+describe('QR de la chaîne WhatsApp (aux couleurs du site, logo central)', () => {
+  it('se décode vers le lien configuré, en grand et en petit (écran de téléphone, 30 mm imprimé)', async () => {
+    const { qrMarquePng, urlChaine } = await import('../../src/lib/pdf/qr-marque');
+    const lien = urlChaine();
+    expect(lien).toMatch(/^https:\/\/(www\.)?whatsapp\.com\/channel\//);
+    const png = await qrMarquePng(lien, 1200);
+    expect(await decoderPng(png)).toBe(lien);
+    for (const px of [520, 260, 180]) {
+      const petit = await sharp(png).resize(px, px).blur(0.6).png().toBuffer();
+      expect(await decoderPng(petit), `à ${px}px`).toBe(lien);
+    }
+  });
+});
