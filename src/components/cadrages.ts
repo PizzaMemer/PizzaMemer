@@ -30,6 +30,3 @@ const table: Record<string, Cadrage> = {
 export function cadrage(nom: string): Cadrage {
   return table[nom] ?? PAR_DEFAUT;
 }
-
-/** Pizza du grand format de l'accueil (si src/assets/brand/hero.* n'existe pas). */
-export const PHOTO_HEROS = 'chorizo.jpg';

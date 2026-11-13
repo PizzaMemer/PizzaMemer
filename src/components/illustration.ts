@@ -1,16 +1,15 @@
 /**
- * Illustration d'une pizza vue du dessus — dessin au trait monochrome (couleur héritée), jamais une photo.
- * Déterministe : la même pizza donne toujours le même dessin (graine = hash de l'id).
- * Seuls la base, l'id et les ingrédients (par mots-clés) comptent ; un ingrédient inconnu est ignoré.
+ * Visuel graphique d'une pizza : un disque vu du dessus, réduit à des formes plates
+ * (aplats, anneaux, demi-lunes, pastilles, lamelles, trames). Jamais une photo, jamais un dessin figuratif.
+ * Déterministe : même id + même base + mêmes ingrédients = même disque (graine = hash de l'id).
+ * Chaque famille d'ingrédient (reconnue par mot-clé) a sa forme et sa couleur ; un ingrédient inconnu est ignoré.
  */
 import type { Pizza } from '../lib/types';
 
-type Pt = { x: number; y: number };
 type Alea = () => number;
+const f = (n: number): string => String(Math.round(n * 10) / 10);
 
-const f = (n: number): number => Math.round(n * 10) / 10;
-
-function hachage(texte: string): number {
+export function hachage(texte: string): number {
   let h = 2166136261;
   for (let i = 0; i < texte.length; i++) {
     h ^= texte.charCodeAt(i);
@@ -30,192 +29,161 @@ function alea(graine: number): Alea {
   };
 }
 
-/** Courbe fermée lissée (Catmull-Rom → Bézier) passant par les points. */
-function lisse(pts: Pt[]): string {
-  const n = pts.length;
-  let d = `M${f(pts[0].x)} ${f(pts[0].y)}`;
-  for (let i = 0; i < n; i++) {
-    const p0 = pts[(i - 1 + n) % n];
-    const p1 = pts[i];
-    const p2 = pts[(i + 1) % n];
-    const p3 = pts[(i + 2) % n];
-    d += `C${f(p1.x + (p2.x - p0.x) / 6)} ${f(p1.y + (p2.y - p0.y) / 6)} ${f(p2.x - (p3.x - p1.x) / 6)} ${f(p2.y - (p3.y - p1.y) / 6)} ${f(p2.x)} ${f(p2.y)}`;
-  }
-  return d + 'Z';
-}
+/** Palette du disque (identique aux jetons de tokens.css). */
+export const C = {
+  rouge: '#cc281a',
+  rougeFonce: '#8f1a10',
+  creme: '#f7efdc',
+  blanc: '#fffaf0',
+  noir: '#14110f',
+  vert: '#1f7a3a',
+  jaune: '#f4b92a',
+  ocre: '#e39a2d',
+  ocreFonce: '#b86f14',
+  brun: '#8a5a3b',
+  rose: '#f2a79b',
+  chorizo: '#6e1510',
+  sauceBlanche: '#f3e2b3',
+  thon: '#e7b48d',
+} as const;
 
-/** Tache irrégulière centrée en (cx, cy), éventuellement allongée (ry) et tournée (rot en radians). */
-function tache(cx: number, cy: number, rx: number, ry: number, rot: number, irr: number, n: number, a: Alea): string {
-  const pts: Pt[] = [];
-  const c = Math.cos(rot);
-  const s = Math.sin(rot);
-  for (let i = 0; i < n; i++) {
-    const ang = (Math.PI * 2 * i) / n;
-    const k = 1 - irr / 2 + a() * irr;
-    const x = Math.cos(ang) * rx * k;
-    const y = Math.sin(ang) * ry * k;
-    pts.push({ x: cx + x * c - y * s, y: cy + x * s + y * c });
-  }
-  return lisse(pts);
-}
+/** Couleurs de fond des cartes (le disque ressort sur chacune). */
+export const FONDS = [C.vert, C.noir, C.jaune, C.creme] as const;
 
-/** Points répartis dans un disque, en évitant qu'ils se chevauchent trop. */
-function semer(n: number, rMax: number, dmin: number, a: Alea): Pt[] {
-  const res: Pt[] = [];
-  for (let i = 0; i < n; i++) {
-    let meilleur: Pt | null = null;
-    let meilleureDist = -1;
-    for (let essai = 0; essai < 24; essai++) {
-      const r = rMax * Math.sqrt(a());
-      const ang = a() * Math.PI * 2;
-      const p = { x: 100 + r * Math.cos(ang), y: 100 + r * Math.sin(ang) };
-      const d = res.reduce((m, q) => Math.min(m, Math.hypot(p.x - q.x, p.y - q.y)), 999);
-      if (d > meilleureDist) {
-        meilleureDist = d;
-        meilleur = p;
-      }
-      if (d >= dmin) break;
-    }
-    if (meilleur) res.push(meilleur);
-  }
-  return res;
-}
+const normaliser = (s: string): string => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
-const normaliser = (s: string): string =>
-  s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-
-export interface MotsCles {
+export interface Familles {
   mozzarella: boolean;
+  cheddar: boolean;
   jambon: boolean;
   champignons: boolean;
   oignon: boolean;
   thon: boolean;
-  cheddar: boolean;
-  viande: boolean;
+  chorizo: boolean;
+  boeuf: boolean;
+  chevre: boolean;
+  basilic: boolean;
+  miel: boolean;
   moutarde: boolean;
+  huile: boolean;
 }
 
-export function motsCles(ingredients: string[]): MotsCles {
+export function familles(ingredients: string[]): Familles {
   const t = ingredients.map(normaliser).join(' | ');
   return {
     mozzarella: /mozzarella|mozza/.test(t),
+    cheddar: /cheddar/.test(t),
     jambon: /jambon/.test(t),
     champignons: /champignon/.test(t),
     oignon: /oignon/.test(t),
     thon: /thon/.test(t),
-    cheddar: /cheddar/.test(t),
-    viande: /viande|boeuf|hache/.test(t),
+    chorizo: /chorizo/.test(t),
+    boeuf: /boeuf|viande|hache/.test(t),
+    chevre: /chevre/.test(t),
+    basilic: /basilic/.test(t),
+    miel: /miel/.test(t),
     moutarde: /moutarde/.test(t),
+    huile: /huile/.test(t),
   };
 }
 
+type Forme = (x: number, y: number, ang: number, tomate: boolean) => string;
+const place = (x: number, y: number, ang: number, contenu: string): string =>
+  `<g transform="translate(${f(x)} ${f(y)}) rotate(${f(ang)})">${contenu}</g>`;
+
+/** Formes d'une famille « petite » : dessinées autour de (0,0), axe y = vers le centre du disque. */
+const FORMES: Record<string, Forme> = {
+  champignons: (x, y, a, t) =>
+    place(x, y, a, `<path d="M-8 3A8 8 0 0 1 8 3Z M-2.4 3h4.8v6h-4.8z" fill="${t ? C.creme : C.brun}"/>`),
+  jambon: (x, y, a) => place(x, y, a, `<rect x="-11" y="-4" width="22" height="8" rx="4" fill="${C.rose}"/>`),
+  thon: (x, y, a) => place(x, y, a, `<rect x="-6.5" y="-6" width="13" height="4.4" rx="2.2" fill="${C.thon}"/><rect x="-6.5" y="1.6" width="13" height="4.4" rx="2.2" fill="${C.thon}"/>`),
+  chorizo: (x, y, a) => place(x, y, a, `<circle r="7" fill="${C.chorizo}" stroke="${C.ocre}" stroke-width="1.3"/><circle r="1.6" fill="${C.ocre}"/>`),
+  boeuf: (x, y, a) => place(x, y, a, `<circle cx="-3.4" cy="2" r="2.6" fill="#3d2217"/><circle cx="3.4" cy="2" r="2.6" fill="#3d2217"/><circle cy="-3.6" r="2.6" fill="#3d2217"/>`),
+  oignon: (x, y, a, t) => place(x, y, a, `<path d="M-8 3A8 8 0 0 1 8 3M-4.4 3A4.4 4.4 0 0 1 4.4 3" fill="none" stroke="${t ? C.creme : C.noir}" stroke-width="1.8" stroke-linecap="round"/>`),
+  chevre: (x, y, a) => place(x, y, a, `<circle r="7.2" fill="${C.blanc}" stroke="${C.ocre}" stroke-width="1.4"/><circle r="2.6" fill="${C.ocre}"/>`),
+  basilic: (x, y, a) => place(x, y, a, `<path d="M0-10C7-5 7 5 0 10C-7 5-7-5 0-10Z" fill="${C.vert}"/><path d="M0-7V7" stroke="${C.creme}" stroke-width="1.1" stroke-linecap="round"/>`),
+};
+const ORDRE = ['champignons', 'jambon', 'thon', 'chorizo', 'boeuf', 'oignon', 'chevre', 'basilic'] as const;
+
 export function dessinerPizza(pizza: Pick<Pizza, 'id' | 'base' | 'ingredients'>): string {
   const a = alea(hachage(pizza.id));
-  const k = motsCles(pizza.ingredients);
-  const tomate = pizza.base === 'tomate';
+  const k = familles(pizza.ingredients);
+  const t = pizza.base === 'tomate';
+  const decalage = a() * 360;
   const o: string[] = [];
+  const pol = (r: number, ang: number): [number, number] => [100 + r * Math.cos((ang * Math.PI) / 180), 100 + r * Math.sin((ang * Math.PI) / 180)];
 
-  // Corniche : double contour irrégulier
-  const corniche = (r0: number, amp: number): string => {
-    const pts: Pt[] = [];
-    for (let i = 0; i < 28; i++) {
-      const ang = (Math.PI * 2 * i) / 28;
-      const r = r0 + (a() - 0.5) * amp;
-      pts.push({ x: 100 + r * Math.cos(ang), y: 100 + r * Math.sin(ang) });
-    }
-    return lisse(pts);
-  };
-  o.push(`<path d="${corniche(95, 3.5)}" stroke-width="1.4"/>`);
-  o.push(`<path d="${corniche(80, 2.5)}"${tomate ? '' : ' stroke-dasharray="1 3.2"'}/>`);
-  // Quelques alvéoles sur la corniche
-  for (let i = 0; i < 10; i++) {
-    const ang = a() * Math.PI * 2;
-    const r = 87.5;
-    o.push(`<path d="${tache(100 + r * Math.cos(ang), 100 + r * Math.sin(ang), 1.8 + a() * 1.6, 1.2 + a() * 1.2, a() * 3, 0.5, 6, a)}" stroke-width=".9"/>`);
-  }
-  if (tomate) {
-    // Sauce : hachures légères
-    for (let y = -56; y <= 56; y += 9) {
-      const demi = Math.sqrt(Math.max(0, 74 * 74 - y * y));
-      o.push(`<path d="M${f(100 - demi)} ${f(100 + y)}L${f(100 + demi)} ${f(100 + y)}" stroke-width=".5" opacity=".35"/>`);
-    }
-  }
+  // Croûte : disque ocre cerclé de noir, perles régulières
+  const perles = 54 + (hachage(pizza.id) % 4) * 6;
+  const pas = (2 * Math.PI * 87) / perles;
+  o.push(`<circle cx="100" cy="100" r="98.5" fill="${C.noir}"/><circle cx="100" cy="100" r="95.5" fill="${C.ocre}"/>`);
+  o.push(`<circle cx="100" cy="100" r="87" fill="none" stroke="${C.ocreFonce}" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="0.01 ${f(pas - 0.01)}" transform="rotate(${f(decalage)} 100 100)"/>`);
+  // Sauce : aplat plein
+  o.push(`<circle cx="100" cy="100" r="78" fill="${t ? C.rouge : C.sauceBlanche}"/>`);
+  o.push(`<circle cx="100" cy="100" r="72.5" fill="none" stroke="${t ? C.rougeFonce : C.ocre}" stroke-width="1.3"${t ? '' : ' stroke-dasharray="2 4.2" stroke-linecap="round"'}/>`);
 
-  let couches = 0;
-  const dessinerMozza = (): void => {
-    for (const p of semer(10, 62, 22, a)) {
-      const rx = 9 + a() * 6;
-      o.push(`<path d="${tache(p.x, p.y, rx, rx * (0.7 + a() * 0.3), a() * 3, 0.45, 8, a)}" fill="var(--papier)"/>`);
-    }
-  };
-  if (k.mozzarella || pizza.ingredients.length === 0) {
-    dessinerMozza();
-    couches++;
-  }
+  // Cheddar : secteurs jaunes
   if (k.cheddar) {
-    for (const p of semer(7, 60, 24, a)) {
-      const rx = 11 + a() * 7;
-      o.push(`<path d="${tache(p.x, p.y, rx, rx * (0.7 + a() * 0.3), a() * 3, 0.5, 8, a)}" fill="var(--papier)"/>`);
+    const n = 3;
+    for (let i = 0; i < n; i++) {
+      const a0 = decalage + i * (360 / n) + 6;
+      const a1 = a0 + 360 / n - 22;
+      const [x0, y0] = pol(73, a0);
+      const [x1, y1] = pol(73, a1);
+      o.push(`<path d="M100 100L${f(x0)} ${f(y0)}A73 73 0 0 1 ${f(x1)} ${f(y1)}Z" fill="${C.jaune}"/>`);
     }
-    couches++;
   }
-  if (k.jambon) {
-    for (const p of semer(7, 60, 24, a)) {
-      const deg = f(a() * 180);
-      o.push(`<g transform="translate(${f(p.x)} ${f(p.y)}) rotate(${deg})" fill="var(--papier)"><path d="${tache(0, 0, 12, 6.5, 0, 0.25, 8, a)}"/></g>`);
-    }
-    couches++;
-  }
-  if (k.champignons) {
-    for (const p of semer(7, 60, 22, a)) {
-      const deg = f(a() * 360);
-      o.push(`<g transform="translate(${f(p.x)} ${f(p.y)}) rotate(${deg})" fill="var(--papier)"><path d="M-8.5 1C-8.5-8.5 8.5-8.5 8.5 1L3.2 1L3.2 8.5C3.2 9.5-3.2 9.5-3.2 8.5L-3.2 1Z"/></g>`);
-    }
-    couches++;
-  }
-  if (k.thon) {
-    for (const p of semer(14, 62, 14, a)) {
-      const rx = 3.6 + a() * 3.4;
-      o.push(`<path d="${tache(p.x, p.y, rx, rx * 0.75, a() * 3, 0.55, 6, a)}" stroke-width=".9"/>`);
-    }
-    couches++;
-  }
-  if (k.viande) {
-    for (const p of semer(30, 62, 7, a)) o.push(`<circle cx="${f(p.x)}" cy="${f(p.y)}" r="${f(1.2 + a() * 1)}" stroke-width=".9"/>`);
-    couches++;
-  }
-  if (k.oignon) {
-    for (const p of semer(9, 60, 18, a)) {
-      const r = 5 + a() * 3.5;
-      const a0 = a() * Math.PI * 2;
-      const span = 1.7 + a() * 1.6;
-      const xa = p.x + r * Math.cos(a0);
-      const ya = p.y + r * Math.sin(a0);
-      const xb = p.x + r * Math.cos(a0 + span);
-      const yb = p.y + r * Math.sin(a0 + span);
-      o.push(`<path d="M${f(xa)} ${f(ya)}A${f(r)} ${f(r)} 0 ${span > Math.PI ? 1 : 0} 1 ${f(xb)} ${f(yb)}" stroke-width="1.3"/>`);
-    }
-    couches++;
-  }
-  if (k.moutarde) {
-    for (let i = 0; i < 3; i++) {
-      const dec = (i - 1) * 24;
-      const demi = Math.sqrt(Math.max(0, 62 * 62 - dec * dec));
-      let d = '';
-      for (let t = -demi, j = 0; t <= demi; t += 9, j++) d += (j === 0 ? 'M' : 'L') + f(100 + t) + ' ' + f(100 + dec + (j % 2 ? 3.5 : -3.5));
-      o.push(`<path d="${d}" stroke-width="1"/>`);
-    }
-    couches++;
-  }
-  if (couches === 0) dessinerMozza();
 
-  // Basilic : uniquement sur la Margherita
-  if (pizza.id === 'margherita') {
-    for (const p of semer(5, 52, 28, a)) {
-      const deg = f(a() * 360);
-      o.push(`<g transform="translate(${f(p.x)} ${f(p.y)}) rotate(${deg}) scale(1.15)"><path d="M0-9C7-6 7 6 0 9C-7 6-7-6 0-9Z" fill="var(--papier)"/><path d="M0-7L0 7" stroke-width=".8"/></g>`);
+  // Mozzarella : grands cercles clairs en couronne
+  const rOut = k.mozzarella ? 66 : 57;
+  if (k.mozzarella) {
+    for (let i = 0; i < 6; i++) {
+      const [x, y] = pol(45, decalage + i * 60);
+      o.push(`<circle cx="${f(x)}" cy="${f(y)}" r="${t ? 15 : 14.5}" fill="${t ? C.blanc : C.blanc}"${t ? '' : ` stroke="${C.ocre}" stroke-width="1.4"`}/>`);
     }
+  }
+
+  // Garnitures « petites » : couronne extérieure (alternance) + couronne intérieure
+  const actives = ORDRE.filter((nom) => k[nom as keyof Familles]);
+  if (actives.length) {
+    const n = actives.length === 1 ? 6 : 12;
+    for (let i = 0; i < n; i++) {
+      const ang = decalage + 30 + i * (360 / n);
+      const nom = actives[i % Math.min(actives.length, 3)];
+      const [x, y] = pol(rOut, ang);
+      o.push(FORMES[nom](x, y, ang - 90, t));
+    }
+    const interieur = actives.length > 1 ? actives[1] : actives[0];
+    const ni = actives.length > 1 ? 5 : 4;
+    for (let i = 0; i < ni; i++) {
+      const ang = decalage + 15 + i * (360 / ni);
+      const [x, y] = pol(20, ang);
+      o.push(FORMES[interieur](x, y, ang - 90, t));
+    }
+  }
+
+  // Moutarde : pointillés ; huile : filet fin pointillé ; miel : filets ocres en spirale
+  if (k.moutarde) {
+    o.push(`<circle cx="100" cy="100" r="34" fill="none" stroke="#6b4a07" stroke-width="3" stroke-linecap="round" stroke-dasharray="0.01 6.4"/>`);
+    o.push(`<circle cx="100" cy="100" r="54" fill="none" stroke="#6b4a07" stroke-width="3" stroke-linecap="round" stroke-dasharray="0.01 6.4"/>`);
+  }
+  if (k.huile) o.push(`<circle cx="100" cy="100" r="76" fill="none" stroke="${C.jaune}" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="14 6"/>`);
+  if (k.miel) {
+    let d = '';
+    for (let th = 0; th <= Math.PI * 6.2; th += 0.12) {
+      const r = 4 + th * 3.1;
+      const [x, y] = pol(r, (th * 180) / Math.PI + decalage);
+      d += (d ? 'L' : 'M') + f(x) + ' ' + f(y);
+    }
+    o.push(`<path d="${d}" fill="none" stroke="#f29a0d" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="30 9"/>`);
   }
 
   return o.join('');
 }
+
+/** Disque de l'accueil : une composition « maison » qui réunit les familles du site (aucune pizza précise). */
+export const DISQUE_MARQUE = {
+  id: 'memer',
+  base: 'tomate' as const,
+  ingredients: ['Mozzarella', 'Champignons', 'Chorizo', 'Basilic', 'Miel'],
+};

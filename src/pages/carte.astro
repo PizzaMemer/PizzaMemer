@@ -6,26 +6,27 @@ import { commerce } from '../config/commerce';
 import { textes } from '../content/textes';
 import { pizzasVisibles } from '../lib/catalogue';
 import { url } from '../lib/url';
+import Marquee from '../components/Marquee.astro';
+import Revele from '../components/Revele.astro';
 import { libelles } from '../components/libelles';
 
 const visibles = pizzasVisibles();
 const rq = commerce.remises.quantite;
-const illustre = visibles.some((p) => !p.photo);
 ---
 <BaseLayout title={metaParPage.carte.title} description={metaParPage.carte.description} jsonLd={donneesStructurees()}>
   <div class="conteneur">
     <header class="page-tete">
-      <h1>{textes.carte.titre}</h1>
+      <Revele tag="h1" texte={textes.carte.titre} immediat />
       <p class="page-tete__intro">{textes.carte.intro}</p>
     </header>
     <div class="carte-outils">
       {rq.actif ? <p class="bandeau">{libelles.remiseQuantite(rq.pourcentage, rq.aPartirDe)}</p> : <span></span>}
-      <a class="souligne" href={url('carte.pdf')} download>{textes.carte.telecharger}</a>
+      <a class="lien-gras" href={url('carte.pdf')} download>{textes.carte.telecharger}</a>
     </div>
     <div class="plats">
       {visibles.map((p) => <PizzaCarte pizza={p} niveau={2} />)}
     </div>
-    {illustre && <p class="note-illustration">{textes.carte.illustration}</p>}
     <div class="page-corps"></div>
   </div>
+  <Marquee class="marquee--jaune" />
 </BaseLayout>

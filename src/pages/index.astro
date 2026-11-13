@@ -2,58 +2,62 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { metaParPage, donneesStructurees } from '../lib/seo';
 import PizzaCarte from '../components/PizzaCarte.astro';
+import PizzaIllustration from '../components/PizzaIllustration.astro';
 import Photo from '../components/Photo.astro';
+import Revele from '../components/Revele.astro';
+import Marquee from '../components/Marquee.astro';
 import { commerce } from '../config/commerce';
 import { textes } from '../content/textes';
 import { pizzasVisibles } from '../lib/catalogue';
 import { url } from '../lib/url';
-import { imageHero, photoAmbiance, photoPizzaParNom } from '../components/marque';
-import { PHOTO_HEROS } from '../components/cadrages';
+import { imageHero, photoAmbiance } from '../components/marque';
+import { DISQUE_MARQUE } from '../components/illustration';
 import { libelles } from '../components/libelles';
 import { joursDistribution } from '../components/outils';
 
 const visibles = pizzasVisibles();
-// Sélection : pizzas photographiées, hors celle du grand format.
-const selection = visibles.filter((p) => p.photo && p.photo !== PHOTO_HEROS).slice(-3);
+const selection = visibles.slice(-4);
 const rq = commerce.remises.quantite;
 const jours = joursDistribution();
+const finale = visibles.find((p) => p.id === 'chevre-miel') ?? visibles[0];
 
-const heros = imageHero ?? photoPizzaParNom(PHOTO_HEROS);
-const nomHeros = imageHero ? 'hero' : PHOTO_HEROS;
-const alt = imageHero ? 'Une de mes pizzas, tout juste sortie du four' : 'Pizza au chorizo tenue à la main, dans le jardin';
-const paton = photoAmbiance('paton.jpg');
-const table = photoAmbiance('signature-blanche-table.jpg');
+// Photos : uniquement si apparence.photos = true (sinon ces valeurs sont null)
+const heros = await imageHero();
+const paton = await photoAmbiance('paton.jpg');
 ---
 <BaseLayout title={metaParPage.accueil.title} description={metaParPage.accueil.description} jsonLd={donneesStructurees()}>
-  <section class="hero" aria-labelledby="titre-hero">
+  <section class="hero sur-rouge" aria-labelledby="titre-hero" data-hero>
+    <div class="hero__halo" aria-hidden="true" data-halo></div>
     <div class="conteneur hero__grille">
-      <div class="hero__visuel">
-        {heros && (
-          <div class="cadre">
-            <Photo src={heros} nom={nomHeros} alt={alt} widths={[640, 960, 1400]} sizes="(min-width: 900px) 46vw, 100vw" priorite />
-          </div>
-        )}
-      </div>
-      <div class="hero__texte">
-        <h1 id="titre-hero" class="hero__accroche">{textes.accueil.accroche}</h1>
-        <p class="hero__intro">{textes.accueil.intro}</p>
-        <div class="boutons">
-          <a class="btn btn--tomate" href={url('commande/')}>{textes.accueil.boutonCommander}</a>
-          <a class="souligne" href={url('carte/')}>{textes.accueil.boutonCarte}</a>
+      <Revele tag="h1" id="titre-hero" class="hero__accroche" texte={textes.accueil.accroche} mixte immediat />
+      <div class="hero__disque" data-disque>
+        <div class="hero__rot">
+          {heros ? (
+            <div class="cadre cadre--rond"><Photo src={heros} nom="hero" alt="Une de mes pizzas, tout juste sortie du four" widths={[640, 960]} sizes="(min-width: 900px) 46vw, 90vw" priorite /></div>
+          ) : (
+            <PizzaIllustration pizza={DISQUE_MARQUE} libelle="Disque graphique aux couleurs de la carte : croûte ocre, sauce rouge, cercles de mozzarella, feuilles de basilic" class="hero__pizza" />
+          )}
         </div>
       </div>
+      <div class="boutons hero__actions">
+        <a class="btn btn--tomate btn--grand" href={url('commande/')}>{textes.accueil.boutonCommander}</a>
+        <a class="lien-gras" href={url('carte/')}>{textes.accueil.boutonCarte}</a>
+      </div>
+      <p class="hero__intro">{textes.accueil.intro}</p>
     </div>
   </section>
 
+  <Marquee />
+
   {selection.length > 0 && (
-    <section class="section" aria-labelledby="titre-selection">
+    <section class="section section--creme" aria-labelledby="titre-selection">
       <div class="conteneur">
-        <div class="section__tete" data-reveal>
+        <div class="section__tete">
           <div>
-            <h2 id="titre-selection">{textes.accueil.selection.titre}</h2>
+            <Revele tag="h2" id="titre-selection" texte={textes.accueil.selection.titre} />
             <p class="section__sous">{textes.accueil.selection.sousTitre}</p>
           </div>
-          <a class="lien-fleche souligne" href={url('carte/')}>{textes.accueil.selection.lienToutVoir}</a>
+          <a class="btn btn--noir" href={url('carte/')}>{textes.accueil.selection.lienToutVoir}</a>
         </div>
         <div class="plats">
           {selection.map((p) => <PizzaCarte pizza={p} />)}
@@ -62,9 +66,9 @@ const table = photoAmbiance('signature-blanche-table.jpg');
     </section>
   )}
 
-  <section class="section section--sable" aria-labelledby="titre-concept">
+  <section class="section section--jaune" aria-labelledby="titre-concept">
     <div class="conteneur">
-      <div class="section__tete" data-reveal><h2 id="titre-concept">{textes.accueil.concept.titre}</h2></div>
+      <div class="section__tete"><Revele tag="h2" id="titre-concept" texte={textes.accueil.concept.titre} /></div>
       <ol class="etapes">
         {textes.accueil.concept.etapes.map((e, i) => (
           <li data-reveal>
@@ -77,27 +81,30 @@ const table = photoAmbiance('signature-blanche-table.jpg');
     </div>
   </section>
 
-  <section class="section--sombre" aria-labelledby="titre-avantages">
-    <div class="conteneur duo">
-      {paton && (
-        <div class="duo__visuel" data-reveal>
-          <div class="cadre">
-            <Photo src={paton} nom="paton.jpg" alt="Un pâton rond posé sur un lit de semoule, sur un plan de travail en marbre" widths={[480, 720, 1000]} sizes="(min-width: 960px) 45vw, 100vw" />
-          </div>
+  <section class="section section--noir sur-noir" aria-labelledby="titre-avantages">
+    <div class="conteneur">
+      <div class="chiffres" data-reveal>
+        <p class="chiffre"><span class="chiffre__n" data-compte={visibles.length}>{visibles.length}</span><span class="chiffre__t">{libelles.chiffrePizzas}</span></p>
+        {rq.actif && <p class="chiffre"><span class="chiffre__n"><span data-compte={rq.pourcentage}>{rq.pourcentage}</span> %</span><span class="chiffre__t">{libelles.chiffreRemise(rq.aPartirDe)}</span></p>}
+        <p class="chiffre"><span class="chiffre__n" data-compte={commerce.distribution.jours.length}>{commerce.distribution.jours.length}</span><span class="chiffre__t">{libelles.chiffreJours}</span></p>
+      </div>
+      <div class={paton ? 'duo' : ''}>
+        {paton && (
+          <div class="duo__visuel"><div class="cadre"><Photo src={paton} nom="paton.jpg" alt="Un pâton rond posé sur un lit de semoule" widths={[480, 720]} sizes="(min-width: 960px) 45vw, 100vw" /></div></div>
+        )}
+        <div>
+          <Revele tag="h2" id="titre-avantages" texte={textes.accueil.avantages.titre} />
+          <ul class="avantages">
+            {textes.accueil.avantages.items.map((a) => (
+              <li data-reveal><h3>{a.titre}</h3><p>{a.texte}</p></li>
+            ))}
+          </ul>
         </div>
-      )}
-      <div>
-        <h2 id="titre-avantages" data-reveal>{textes.accueil.avantages.titre}</h2>
-        <ul class="avantages">
-          {textes.accueil.avantages.items.map((a) => (
-            <li data-reveal><h3>{a.titre}</h3><p>{a.texte}</p></li>
-          ))}
-        </ul>
       </div>
     </div>
   </section>
 
-  <section class="section" aria-label="Infos pratiques">
+  <section class="section section--creme" aria-label="Infos pratiques">
     <div class="conteneur">
       <div class="pratique" data-reveal>
         <div>
@@ -120,23 +127,19 @@ const table = photoAmbiance('signature-blanche-table.jpg');
     </div>
   </section>
 
-  <section class="section section--sable" aria-labelledby="titre-final">
-    <div class="conteneur final">
-      <div class="final__texte" data-reveal>
-        <h2 id="titre-final">{textes.accueil.final.titre}</h2>
+  <section class="section section--rouge sur-rouge final" aria-labelledby="titre-final">
+    <div class="conteneur final__grille">
+      <div class="final__texte">
+        <Revele tag="h2" id="titre-final" class="final__titre" texte={textes.accueil.final.titre} />
         <p>{textes.accueil.final.texte}</p>
         <div class="boutons">
-          <a class="btn btn--tomate" href={url('commande/')}>{textes.accueil.boutonCommander}</a>
-          <a class="souligne" href={url('carte/')}>{textes.accueil.boutonCarte}</a>
+          <a class="btn btn--tomate btn--grand" href={url('commande/')}>{textes.accueil.boutonCommander}</a>
+          <a class="lien-gras" href={url('carte/')}>{textes.accueil.boutonCarte}</a>
         </div>
       </div>
-      {table && (
-        <div class="final__visuel" data-reveal>
-          <div class="cadre">
-            <Photo src={table} nom="signature-blanche-table.jpg" alt="Pizza blanche sur une planche en bois, avec un verre de vin rouge et une carafe d’huile d’olive, dans un jardin" widths={[480, 720, 960]} sizes="(min-width: 900px) 34vw, 420px" />
-          </div>
-        </div>
-      )}
+      <div class="final__disque" aria-hidden="true">
+        <PizzaIllustration pizza={finale} libelle={`Pizza ${finale.nom} : composition graphique`} />
+      </div>
     </div>
   </section>
 </BaseLayout>

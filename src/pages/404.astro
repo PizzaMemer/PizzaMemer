@@ -2,16 +2,17 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { metaParPage } from '../lib/seo';
 import { textes } from '../content/textes';
+import Revele from '../components/Revele.astro';
 import { url } from '../lib/url';
 
 ---
 <BaseLayout title={metaParPage.introuvable.title} description={metaParPage.introuvable.description} noindex>
   <div class="conteneur page-404">
-    <h1>Cette page est introuvable</h1>
+    <Revele tag="h1" texte="Cette page est introuvable" immediat />
     <p>Le lien est peut-être ancien. Retrouvez mes pizzas sur la carte.</p>
     <div class="boutons">
       <a class="btn btn--tomate" href={url('carte/')}>{textes.accueil.boutonCarte}</a>
-      <a class="souligne" href={url()}>{textes.nav.accueil}</a>
+      <a class="lien-gras" href={url()}>{textes.nav.accueil}</a>
     </div>
   </div>
 </BaseLayout>

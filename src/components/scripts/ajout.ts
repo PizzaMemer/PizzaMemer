@@ -2,6 +2,43 @@
 import { ajouter } from '../../lib/cart';
 
 const QMAX = 99;
+const reduit = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/** Un petit disque part de la carte et file vers le panier de l'en-tête (transform + opacity, Web Animations). */
+function envolerDisque(bouton: HTMLElement): void {
+  const carte = bouton.closest('.plat');
+  const source = carte?.querySelector<SVGElement>('.illustration');
+  const cible = document.querySelector<HTMLElement>('.panier-bouton');
+  if (reduit || !source || !cible || typeof source.animate !== 'function') return;
+  const a = source.getBoundingClientRect();
+  const b = cible.getBoundingClientRect();
+  const taille = 56;
+  const clone = source.cloneNode(true) as SVGElement;
+  clone.removeAttribute('class');
+  clone.setAttribute('aria-hidden', 'true');
+  clone.removeAttribute('role');
+  clone.removeAttribute('aria-label');
+  Object.assign(clone.style, { position: 'fixed', left: '0', top: '0', width: `${taille}px`, height: `${taille}px`, zIndex: '90', pointerEvents: 'none', willChange: 'transform' });
+  document.body.appendChild(clone);
+  const x0 = a.left + a.width / 2 - taille / 2;
+  const y0 = a.top + a.height / 2 - taille / 2;
+  const x1 = b.left + b.width / 2 - taille / 2;
+  const y1 = b.top + b.height / 2 - taille / 2;
+  const anim = clone.animate(
+    [
+      { transform: `translate(${x0}px, ${y0}px) scale(${Math.min(2.4, a.width / taille)}) rotate(0deg)`, opacity: 1 },
+      { transform: `translate(${(x0 + x1) / 2}px, ${Math.min(y0, y1) - 40}px) scale(1.1) rotate(200deg)`, opacity: 1, offset: 0.55 },
+      { transform: `translate(${x1}px, ${y1}px) scale(0.3) rotate(420deg)`, opacity: 0.2 },
+    ],
+    { duration: 720, easing: 'cubic-bezier(0.5, 0, 0.3, 1)' },
+  );
+  anim.onfinish = () => {
+    clone.remove();
+    cible.classList.remove('panier-bouton--recoit');
+    void cible.offsetWidth;
+    cible.classList.add('panier-bouton--recoit');
+  };
+}
 
 function champ(depuis: Element): HTMLInputElement | null {
   return depuis.closest('.plat__ajout, .qte')?.querySelector<HTMLInputElement>('[data-qte-champ]') ?? null;
@@ -37,6 +74,7 @@ document.addEventListener('click', (ev) => {
     window.setTimeout(() => (zone.textContent = `${quantite} × ${nom} : ${fait}`), 30);
   }
   window.dispatchEvent(new CustomEvent('panier:ajout'));
+  envolerDisque(bouton);
 
   if (!bouton.dataset.libelle) bouton.dataset.libelle = bouton.textContent ?? '';
   bouton.textContent = fait;

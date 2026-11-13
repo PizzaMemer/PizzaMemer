@@ -32,18 +32,17 @@ formulaire + envoi WhatsApp) · `/carte.pdf` · `/qr/…` (visuels QR). Le QR po
 ## Règles non négociables
 1. Ne rien inventer : ni prix, ni ingrédient, ni allergène, ni horaire, ni avis client, ni consigne de
    cuisson/conservation. Une donnée vide dans la config = élément non affiché.
-2. Pas de photo de pizza fabriquée. Sans photo réelle (`photo: null`), afficher l'illustration
-   vectorielle `PizzaIllustration` — clairement un dessin, jamais un faux cliché.
+2. Aucune photo sur le site (`src/config/apparence.ts`, `photos: false`) : chaque pizza a un visuel
+   graphique abstrait (`illustration.ts`). Les photos du gérant sont rangées dans `photos-reserve/`.
 3. Ouvrir WhatsApp ≠ commande confirmée. Le site le dit explicitement et ne vide pas le panier
    automatiquement à l'ouverture du lien.
 4. Aucun délai minimum de 24 h imposé.
 5. Français partout (interface, commentaires utiles au gérant, noms de fonctions métier).
 
 ## Direction artistique
-Consigne du gérant : « un truc de pro, design sobre avec des effets classe ». Principes retenus :
-- **Palette resserrée** (`tokens.css`) : crème, brun-noir, sable en aplat ; tomate réservé aux actions, basilic à WhatsApp et au succès.
-- **Typographie** : Fraunces léger pour les titres, Figtree pour le texte ; petites capitales espacées (`.caps`) pour le seul registre « étiquette ».
-- **Photos en cadres rectangulaires** à ratio constant par contexte ; recadrage par fichier dans `src/components/cadrages.ts` (jamais dans la config commerciale). `Photo.astro` : avif + webp, 3 largeurs.
-- **Repli sans photo** : dessin au trait monochrome sur fond sable, avec la mention `textes.carte.illustration`.
-- **Mouvement discret** (200–600 ms, CSS + IntersectionObserver, tout coupé sous `prefers-reduced-motion`) : apparition échelonnée, masque et parallaxe du héros, zoom lent au survol, en-tête condensé, soulignements animés, coche à l'ajout, View Transitions inter-documents.
-- Aucun ornement gratuit : pas de grain, de disques ni d'étiquettes colorées ; filets fins et grille rigoureuse.
+Consigne du gérant : « quelque chose de plus graphique, moderne, avec des effets visuels ; pas de photos de pizza ». Parti pris : affiche contemporaine.
+- **Zéro photo** : `src/config/apparence.ts` (`photos: false`) ; `marque.ts` charge les photos à la demande, donc rien n'est traité au build tant que l'interrupteur est coupé.
+- **Visuel = disque vectoriel abstrait** (`illustration.ts`) : croûte ocre perlée, sauce en aplat, une forme géométrique par famille d'ingrédient (mozzarella = cercles, basilic = amandes, champignon = demi-disques, oignon = arcs, chorizo = pastilles, miel = spirale, cheddar = secteurs…), déterministe depuis `id` + `base` + ingrédients.
+- **Palette** (`tokens.css`) : aplats rouge tomate / noir / crème, jaune et vert en accents ; sections pleines, contraste AA vérifié (texte blanc ou crème sur rouge, jaune sur noir).
+- **Typographie** : Fraunces 900 serré, romain + italique, pour les titres et gros chiffres ; Figtree pour le texte. **Formes** : pilules (boutons, prix, étiquettes), panneaux à angles francs, filets de 3 px, ombre dure.
+- **Effets** (CSS + JS natif, `transform`/`opacity`, coupés sous `prefers-reduced-motion`) : disque du héros qui tourne et suit le défilement, halo au pointeur (bureau), bandeau défilant `aria-hidden`, titres révélés mot à mot, disques qui se posent/tournent sur les cartes, compteurs, disque qui vole vers le panier, View Transitions. La page /commande/ reste sobre.

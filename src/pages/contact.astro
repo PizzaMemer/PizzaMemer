@@ -4,6 +4,8 @@ import { metaParPage, donneesStructurees } from '../lib/seo';
 import { commerce } from '../config/commerce';
 import { textes } from '../content/textes';
 import { rs } from '../lib/format';
+import Marquee from '../components/Marquee.astro';
+import Revele from '../components/Revele.astro';
 import { libelles } from '../components/libelles';
 import { fraisZone, joursDistribution } from '../components/outils';
 
@@ -13,7 +15,7 @@ const jours = joursDistribution();
 <BaseLayout title={metaParPage.contact.title} description={metaParPage.contact.description} jsonLd={donneesStructurees()}>
   <div class="conteneur">
     <header class="page-tete">
-      <h1>{t.titre}</h1>
+      <Revele tag="h1" texte={t.titre} immediat />
       <p class="page-tete__intro">{t.intro}</p>
     </header>
     <div class="contact-grille page-corps">
@@ -61,4 +63,5 @@ const jours = joursDistribution();
       )}
     </div>
   </div>
+  <Marquee class="marquee--jaune" />
 </BaseLayout>

@@ -4,18 +4,20 @@ import { metaParPage, donneesStructurees, donneesFaq } from '../lib/seo';
 import { commerce } from '../config/commerce';
 import { textes } from '../content/textes';
 import { url } from '../lib/url';
+import Marquee from '../components/Marquee.astro';
+import Revele from '../components/Revele.astro';
 import Photo from '../components/Photo.astro';
 import { photoAmbiance } from '../components/marque';
 
 const t = textes.commentCaMarche;
 const { cuisson, conservation, congelation } = commerce.preparation;
-const sortie = photoAmbiance('sortie-du-four.jpg');
-const four = photoAmbiance('four.jpg');
+const sortie = await photoAmbiance('sortie-du-four.jpg');
+const four = await photoAmbiance('four.jpg');
 ---
 <BaseLayout title={metaParPage.commentCaMarche.title} description={metaParPage.commentCaMarche.description} jsonLd={[donneesStructurees(), donneesFaq(t.faq)]}>
   <div class="conteneur--etroit">
     <header class="page-tete">
-      <h1>{t.titre}</h1>
+      <Revele tag="h1" texte={t.titre} immediat />
       <p class="page-tete__intro">{t.intro}</p>
     </header>
 
@@ -29,7 +31,7 @@ const four = photoAmbiance('four.jpg');
 
     {cuisson.length > 0 && (
       <section class="bloc" aria-labelledby="t-cuisson">
-        <h2 class="bloc__titre" id="t-cuisson">{t.cuisson.titre}</h2>
+        <Revele tag="h2" class="bloc__titre" id="t-cuisson" texte={t.cuisson.titre} />
         <ol class="pas">
           {cuisson.map((e, i) => <li><span class="pas__num" aria-hidden="true">{i + 1}</span><span>{e}</span></li>)}
         </ol>
@@ -46,20 +48,20 @@ const four = photoAmbiance('four.jpg');
 
     {conservation.length > 0 && (
       <section class="bloc" aria-labelledby="t-conservation">
-        <h2 class="bloc__titre" id="t-conservation">{t.conservation.titre}</h2>
+        <Revele tag="h2" class="bloc__titre" id="t-conservation" texte={t.conservation.titre} />
         <ul class="liste-simple">{conservation.map((e) => <li>{e}</li>)}</ul>
       </section>
     )}
 
     {congelation.length > 0 && (
       <section class="bloc" aria-labelledby="t-congelation">
-        <h2 class="bloc__titre" id="t-congelation">{t.congelation.titre}</h2>
+        <Revele tag="h2" class="bloc__titre" id="t-congelation" texte={t.congelation.titre} />
         <ul class="liste-simple">{congelation.map((e) => <li>{e}</li>)}</ul>
       </section>
     )}
 
     <section class="bloc" aria-labelledby="t-commander">
-      <h2 class="bloc__titre" id="t-commander">{t.commander.titre}</h2>
+      <Revele tag="h2" class="bloc__titre" id="t-commander" texte={t.commander.titre} />
       <ol class="pas">
         {t.commander.etapes.map((e, i) => <li><span class="pas__num" aria-hidden="true">{i + 1}</span><span>{e}</span></li>)}
       </ol>
@@ -67,7 +69,7 @@ const four = photoAmbiance('four.jpg');
     </section>
 
     <section class="bloc page-corps" aria-labelledby="t-faq">
-      <h2 class="bloc__titre" id="t-faq">Questions fréquentes</h2>
+      <Revele tag="h2" class="bloc__titre" id="t-faq" texte="Questions fréquentes" />
       <div class="faq">
         {t.faq.map((q) => (
           <details>
@@ -78,4 +80,5 @@ const four = photoAmbiance('four.jpg');
       </div>
     </section>
   </div>
+  <Marquee class="marquee--jaune" />
 </BaseLayout>

@@ -24,7 +24,7 @@ const idTitre = `plat-${pizza.id}`;
     </div>
     {pizza.badge && (
       <p class="plat__badge">
-        <span class="caps">{pizza.badge === 'nouveau' ? libelles.nouveau : libelles.temporaire}</span>
+        <span class="etiquette">{pizza.badge === 'nouveau' ? libelles.nouveau : libelles.temporaire}</span>
         {pizza.badge === 'temporaire' && pizza.jusquau && <span class="plat__jusquau">{libelles.jusquau} {jourMois(pizza.jusquau)}</span>}
       </p>
     )}

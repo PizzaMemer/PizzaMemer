@@ -1,0 +1,16 @@
+---
+/** Bandeau défilant décoratif : masqué aux lecteurs d'écran, ne crée aucun défilement horizontal. */
+import { libelles } from './libelles';
+interface Props { class?: string }
+const { class: classe } = Astro.props;
+const mots = libelles.bandeau;
+---
+<div class:list={['marquee', classe]} aria-hidden="true">
+  <div class="marquee__piste">
+    {[0, 1].map(() => (
+      <div class="marquee__groupe">
+        {mots.map((m, i) => <span class:list={['marquee__mot', i % 2 === 1 && 'marquee__mot--it']}>{m}<i class="marquee__point"></i></span>)}
+      </div>
+    ))}
+  </div>
+</div>

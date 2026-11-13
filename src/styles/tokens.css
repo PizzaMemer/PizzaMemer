@@ -1,41 +1,46 @@
-/* Jetons de design Pizza Memer — direction artistique « sobre, avec des effets classe ».
-   Palette resserrée : crème, brun-noir, tomate (actions uniquement), basilic (WhatsApp et succès). */
+/* Jetons de design Pizza Memer — direction « affiche graphique » :
+   grands aplats rouge tomate / noir / crème, jaune et vert en accents, filets épais, pilules et angles francs. */
 :root {
-  /* Couleurs */
-  --creme: #f5efe4;         /* fond principal */
-  --papier: #fbf8f2;        /* surfaces, champs */
-  --sable: #ece4d4;         /* aplats de section, fond du repli sans photo */
-  --four: #1e1713;          /* brun-noir : texte, sections sombres */
-  --encre: #2a211b;         /* texte courant */
-  --encre-douce: #675a4e;   /* texte secondaire (AA sur crème et sable) */
-  --trait: #d8cdb9;         /* filets */
-  --tomate: #b52d1a;        /* actions */
-  --tomate-fonce: #8c2012;
-  --basilic: #2b6839;       /* WhatsApp, succès */
-  --basilic-clair: #e1ebdd;
-  --laiton: #c9ab78;        /* filet discret sur fond sombre */
+  /* Aplats */
+  --rouge: #cc281a;         /* tomate vif : sections, actions (texte blanc ou crème AA dessus) */
+  --rouge-texte: #b01f10;   /* rouge pour texte sur crème */
+  --creme: #f7efdc;         /* fond principal */
+  --papier: #fffaf0;        /* surfaces, champs */
+  --noir: #14110f;          /* noir profond : texte, sections, filets */
+  --jaune: #f4b92a;         /* accent chaud (texte noir dessus) */
+  --vert: #1f7a3a;          /* basilic : WhatsApp, succès */
+  --vert-clair: #dcebd5;
+  --ocre: #e39a2d;
+  --sable: #ecdfc2;
+  --encre: #14110f;         /* texte courant */
+  --encre-douce: #5a5044;   /* texte secondaire (AA sur crème, sable) */
+  --sur-noir-doux: #d3c9b8; /* texte secondaire sur noir */
+  --trait: #14110f;
+  --trait-doux: #cdbf9f;
 
-  /* Typographies (auto-hébergées, voir BaseLayout) */
+  /* Typographies (auto-hébergées) : titres Fraunces très gras, romain + italique ; texte Figtree */
   --titre: 'Fraunces Variable', 'Fraunces', Georgia, serif;
   --texte: 'Figtree Variable', 'Figtree', system-ui, sans-serif;
 
   /* Échelle fluide */
-  --t-hero: clamp(2.05rem, 1.15rem + 3.6vw, 3.9rem);
-  --t-h1: clamp(2.2rem, 1.3rem + 3.4vw, 3.6rem);
-  --t-h2: clamp(1.7rem, 1.1rem + 2.2vw, 2.6rem);
-  --t-h3: clamp(1.2rem, 1.1rem + 0.5vw, 1.45rem);
+  --t-hero: clamp(2.3rem, 0.9rem + 5.6vw, 6rem);
+  --t-h1: clamp(2.6rem, 1rem + 6.4vw, 6.4rem);
+  --t-h2: clamp(2.1rem, 0.9rem + 4.6vw, 4.4rem);
+  --t-h3: clamp(1.3rem, 1.1rem + 0.7vw, 1.65rem);
   --t-corps: 1.0625rem;
-  --t-petit: 0.9rem;
-  --t-micro: 0.72rem;       /* petites capitales */
-  --interlettre-caps: 0.14em;
+  --t-petit: 0.92rem;
+  --t-micro: 0.78rem;
 
   /* Rythme */
   --e-1: 0.5rem; --e-2: 1rem; --e-3: 1.5rem; --e-4: 2.5rem; --e-5: 4.5rem; --e-6: 7rem;
-  --rayon: 4px; --rayon-petit: 3px;
-  --largeur: 1180px;
+  --filet: 3px;             /* épaisseur unique des filets et contours */
+  --rayon: 0;               /* panneaux : angles francs */
+  --pilule: 999px;          /* boutons, étiquettes, prix */
+  --ombre-dure: 5px 5px 0 var(--noir);
+  --largeur: 1240px;
 
-  /* Mouvement : courbes douces, 200 à 600 ms */
+  /* Mouvement */
   --douce: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --transition: 220ms var(--douce);
-  --apparition: 600ms var(--douce);
+  --vif: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition: 200ms var(--douce);
 }

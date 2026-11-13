@@ -1,13 +1,14 @@
 ---
 /**
- * Visuel rectangulaire d'une pizza : photo réelle (src/assets/pizzas/) si elle existe,
- * sinon un repli sobre : dessin au trait sur fond uni, avec la mention « illustration ».
+ * Visuel d'une pizza : composition graphique (disque vectoriel sur aplat de couleur).
+ * Une photo n'est affichée que si apparence.photos = true ET que le fichier existe.
  */
 import type { Pizza } from '../lib/types';
-import { textes } from '../content/textes';
 import PizzaIllustration from './PizzaIllustration.astro';
 import Photo from './Photo.astro';
 import { photoPizza } from './marque';
+import { FONDS } from './illustration';
+import { pizzas } from '../config/pizzas';
 
 interface Props {
   pizza: Pizza;
@@ -15,15 +16,14 @@ interface Props {
   class?: string;
 }
 const { pizza, sizes = '(min-width: 1000px) 380px, (min-width: 640px) 46vw, 116px', class: classe } = Astro.props;
-const photo = photoPizza(pizza.photo, pizza.id);
+const photo = await photoPizza(pizza.photo, pizza.id);
+const rang = Math.max(0, pizzas.findIndex((p) => p.id === pizza.id));
+const libelle = `Pizza ${pizza.nom} : composition graphique`;
 ---
-{photo && pizza.photo ? (
-  <div class:list={['cadre', 'zoomable', classe]}>
-    <Photo src={photo} nom={pizza.photo} alt={`Pizza ${pizza.nom}`} widths={[320, 480, 720]} sizes={sizes} />
-  </div>
-) : (
-  <div class:list={['cadre', 'cadre--dessin', classe]} role="img" aria-label={`${pizza.nom} — ${textes.carte.illustration}`}>
-    <PizzaIllustration pizza={pizza} />
-    <p class="cadre__mention" aria-hidden="true">{textes.carte.illustration}</p>
-  </div>
-)}
+<div class:list={['visuel', classe]} style={`--fond:${FONDS[rang % FONDS.length]}`} data-visuel>
+  {photo && pizza.photo ? (
+    <div class="cadre"><Photo src={photo} nom={pizza.photo} alt={`Pizza ${pizza.nom}`} widths={[320, 480, 720]} sizes={sizes} /></div>
+  ) : (
+    <PizzaIllustration pizza={pizza} libelle={libelle} />
+  )}
+</div>

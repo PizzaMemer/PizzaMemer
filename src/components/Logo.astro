@@ -1,7 +1,5 @@
 ---
-import { Image } from 'astro:assets';
 import { commerce } from '../config/commerce';
-import { imageLogo } from './marque';
 
 interface Props {
   /** Sur fond sombre. */
@@ -10,16 +8,20 @@ interface Props {
   empile?: boolean;
   class?: string;
 }
-const { clair = false, empile = false, class: classe } = Astro.props;
+const { clair = false, class: classe } = Astro.props;
 ---
-{imageLogo ? (
-  <Image src={imageLogo} alt={commerce.nom} height={empile ? 96 : 40} class:list={['logo-image', classe]} loading="eager" />
-) : (
-  <span class:list={['logo', clair && 'logo--clair', classe]}>
-    <span class="logo__mots" aria-hidden="true">
-      <span class="logo__pizza">Pizza</span>
-      <span class="logo__memer">Memer</span>
-    </span>
-    <span class="sr-only">{commerce.nom}</span>
+<span class:list={['logo', clair && 'logo--clair', classe]}>
+  <svg class="logo__disque" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+    <circle cx="20" cy="20" r="19" fill="#14110f"/>
+    <circle cx="20" cy="20" r="17" fill="#e39a2d"/>
+    <circle cx="20" cy="20" r="13" fill="#cc281a"/>
+    <circle cx="15" cy="16.500" r="4" fill="#fffaf0"/>
+    <circle cx="25.500" cy="22" r="4" fill="#fffaf0"/>
+    <path d="M17 27c2-4 6-4 8-1-2 3-6 4-8 1z" fill="#1f7a3a"/>
+  </svg>
+  <span class="logo__mots" aria-hidden="true">
+    <span class="logo__pizza">Pizza</span>
+    <span class="logo__memer">Memer</span>
   </span>
-)}
+  <span class="sr-only">{commerce.nom}</span>
+</span>

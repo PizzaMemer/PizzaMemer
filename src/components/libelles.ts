@@ -41,5 +41,10 @@ export const libelles = {
   sousVide: 'Sous vide',
   remisesLigne: 'Remises',
   zoneFrais: 'Frais',
+  /** Mots du bandeau défilant (uniquement des faits déjà énoncés sur le site). */
+  bandeau: ['Pâte à fermentation longue', 'Précuite', 'Prête en quelques minutes', 'Péreybère', 'Retrait ou livraison', 'Se congèle'],
+  chiffrePizzas: 'pizzas à la carte',
+  chiffreRemise: (n: number) => `de remise dès ${n} pizzas`,
+  chiffreJours: 'jours de distribution par semaine',
   lienWhatsAppFallback: 'Si WhatsApp ne s’est pas ouvert, utilisez ce lien :',
 } as const;

@@ -55,7 +55,8 @@ Ces commandes sont les mêmes que celles lancées par GitHub avant chaque mise e
 
 - `src/config/` : la carte (`pizzas.ts`) et les réglages commerciaux (`commerce.ts`).
 - `src/content/` : les textes du site (`textes.ts`).
-- `src/assets/` : les photos. `pizzas/` pour les pizzas, `brand/` pour le logo et le haut de l'accueil, `ambiance/` pour les autres photos.
+- `photos-reserve/` : vos photos, mises de côté (le site n'en affiche aucune ; voir `src/config/apparence.ts`).
+- `src/assets/` : emplacement des photos si vous les réactivez. `pizzas/` pour les pizzas, `brand/` pour le logo et le haut de l'accueil, `ambiance/` pour les autres photos.
 - `src/components/` : les morceaux d'affichage. `cadrages.ts` règle le cadrage des photos.
 - `src/pages/` : une page par adresse du site.
 - `src/lib/` : les calculs (prix, remises, dates, message WhatsApp, PDF, QR). À ne pas modifier sans développeur.

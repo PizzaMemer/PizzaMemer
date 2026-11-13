@@ -92,7 +92,7 @@ Copiez le bloc ci-dessous, puis collez-le juste après le `},` de la dernière p
 ```
 
 - `id` : identifiant unique, en minuscules, sans espace ni accent. Il ne doit pas être identique à celui d'une autre pizza. Ensuite, ne le changez plus.
-- `photo: null` : pas encore de photo. Le site affiche alors un dessin à la place (voir la section sur les photos).
+- `photo: null` : pas encore de photo. Le site affiche un visuel graphique (voir la section sur les photos).
 - `base` : `'tomate'` ou `'blanche'`, pour choisir la couleur du dessin.
 
 ### 4. Marquer une pizza indisponible
@@ -163,6 +163,12 @@ Pour l'enlever, remettez `badge: null,`.
 
 ### 8. Ajouter ou remplacer une photo
 
+> **Depuis le 13 novembre 2026, le site n'affiche aucune photo** : chaque pizza a un visuel graphique
+> généré automatiquement à partir de ses ingrédients (rien à faire quand vous ajoutez une pizza).
+> Vos photos sont rangées dans `photos-reserve/`. Ce qui suit ne s'applique que si vous réactivez
+> les photos : remettez les fichiers dans `src/assets/pizzas/` et passez `photos: true` dans
+> `src/config/apparence.ts`.
+
 **Préparer le fichier**
 
 - Format JPEG, conseillé. Le site accepte aussi `.png`, `.webp` et `.avif`.
@@ -219,7 +225,7 @@ Si le nom de la photo est mal orthographié, le site ne s'arrête pas : la pizza
 ### Photo du haut de l'accueil
 
 Déposez un fichier nommé `hero.jpg` (ou `hero.jpeg`, `hero.png`, `hero.webp`) dans le dossier `src/assets/brand/`.
-Sans ce fichier, le site utilise la photo de la pizza au chorizo.
+Sans ce fichier, le site affiche un grand visuel graphique.
 
 ### Logo
 

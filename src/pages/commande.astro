@@ -3,12 +3,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { metaParPage } from '../lib/seo';
 import Commande from '../components/Commande';
 import { textes } from '../content/textes';
+import Revele from '../components/Revele.astro';
 import { url } from '../lib/url';
 ---
 <BaseLayout title={metaParPage.commande.title} description={metaParPage.commande.description} commande noindex>
   <div class="conteneur commande-page">
     <header class="page-tete">
-      <h1>{textes.commande.titre}</h1>
+      <Revele tag="h1" texte={textes.commande.titre} immediat />
       <p class="page-tete__intro">{textes.commande.intro}</p>
     </header>
     <Commande client:load hrefCarte={url('carte/')} />

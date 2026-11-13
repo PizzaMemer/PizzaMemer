@@ -1,0 +1,33 @@
+---
+/**
+ * Titre dont les mots se révèlent par un masque (voir interface.ts / base.css).
+ * Le texte est découpé à la compilation ; sans JavaScript, tout est visible.
+ * `mixte` : la partie après la première virgule passe en italique (mélange romain / italique).
+ */
+interface Props {
+  texte: string;
+  tag?: 'h1' | 'h2' | 'h3';
+  id?: string;
+  class?: string;
+  mixte?: boolean;
+  /** Révélation immédiate au chargement (haut de page) plutôt qu'à l'entrée dans l'écran. */
+  immediat?: boolean;
+}
+const { texte, tag: Tag = 'h2', id, class: classe, mixte = false, immediat = false } = Astro.props;
+const i = mixte ? texte.indexOf(', ') : -1;
+const parties = i > 0 ? [texte.slice(0, i + 1), texte.slice(i + 2)] : [texte];
+let rang = 0;
+---
+<Tag id={id} class:list={['revele', classe]} data-lignes={immediat ? 'immediat' : ''}>
+  {parties.map((partie, p) => (
+    <>
+      {p > 0 && ' '}
+      {partie.split(' ').map((mot, m, tous) => (
+        <>
+          <span class:list={['mot', p === 1 && 'mot--it']}><span class="mot__in" style={`--i:${rang++}`}>{mot}</span></span>
+          {m < tous.length - 1 && ' '}
+        </>
+      ))}
+    </>
+  ))}
+</Tag>
