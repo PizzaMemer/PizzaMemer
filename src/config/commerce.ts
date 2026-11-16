@@ -28,6 +28,14 @@ export const commerce: Commerce = {
   /** Lien de la chaîne WhatsApp ("" = le bloc et son QR code disparaissent du site). */
   chaineWhatsapp: 'https://whatsapp.com/channel/0029VbDk91j47XeL8KRZui44',
 
+  // ── Statistiques de visites (privées, visibles par vous seul) ──
+  /**
+   * Code de votre compte GoatCounter : la partie avant ".goatcounter.com" de l'adresse de votre
+   * tableau de bord (ex. 'pizzamemer' pour https://pizzamemer.goatcounter.com).
+   * '' = aucun comptage, aucun script chargé. Sans cookies, aucune donnée personnelle conservée.
+   */
+  statistiques: { goatcounter: '' },
+
   // ── Adresse publique du site (sert au QR code, au partage, au référencement) ──
   /** NE CHANGEZ PAS cette adresse après avoir imprimé le QR code sur les boîtes. */
   urlSite: 'https://pizzamemer.github.io/PizzaMemer',
