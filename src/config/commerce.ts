@@ -34,7 +34,7 @@ export const commerce: Commerce = {
    * tableau de bord (ex. 'pizzamemer' pour https://pizzamemer.goatcounter.com).
    * '' = aucun comptage, aucun script chargé. Sans cookies, aucune donnée personnelle conservée.
    */
-  statistiques: { goatcounter: '' },
+  statistiques: { goatcounter: 'pizzamemer' },
 
   // ── Adresse publique du site (sert au QR code, au partage, au référencement) ──
   /** NE CHANGEZ PAS cette adresse après avoir imprimé le QR code sur les boîtes. */
