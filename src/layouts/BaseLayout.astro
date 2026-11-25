@@ -46,16 +46,18 @@ const annee = new Date().getFullYear();
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
-    <script is:inline>document.documentElement.classList.add('js');</script>
     <Seo title={title} description={description} image={image} type={type} noindex={noindex} jsonLd={jsonLd} />
     <link rel="preload" href={titreWoff2} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={titreItalWoff2} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={texteWoff2} as="font" type="font/woff2" crossorigin />
-    {/^[a-z0-9-]+$/i.test(commerce.statistiques.goatcounter) && (
-      <script is:inline async data-goatcounter={`https://${commerce.statistiques.goatcounter}.goatcounter.com/count`} src="https://gc.zgo.at/count.js"></script>
-    )}
   </head>
   <body>
+    {/* Scripts placés après <head> : la politique de sécurité (CSP), insérée par Astro à la fin
+        du <head>, ne s'applique qu'aux éléments qui la suivent. */}
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    {/^[a-z0-9-]+$/i.test(commerce.statistiques.goatcounter) && (
+      <script is:inline async data-goatcounter={`https://${commerce.statistiques.goatcounter}.goatcounter.com/count`} src="https://gc.zgo.at/count.v5.js" integrity="sha384-atnOLvQb9t+jTSipvd75X2yginT4PjVbqDdlJAmxMm+wYElFmeR6EmLP5bYeoRVQ" crossorigin="anonymous"></script>
+    )}
     <a class="evitement" href="#contenu">{libelles.evitement}</a>
     <header class="entete" data-entete>
       <div class="conteneur entete__interieur">
